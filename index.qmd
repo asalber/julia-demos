@@ -1,0 +1,7 @@
+---
+title: Demostraciones de Cálculo Científico con Julia
+author: Alfredo Sánchez Alberca ([asalber@ceu.es](mailto:asalber@ceu.es))
+---
+
+1.  [Cálculo de la aceleración de la gravedad](gravedad.html)
+2.  [Filtros de imágenes](filtros-imagenes)
