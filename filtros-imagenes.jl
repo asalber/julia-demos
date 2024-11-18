@@ -271,11 +271,11 @@ aplicar_filtro(imagen, seleccion_filtro)
 # ╔═╡ 9d42dd93-98b4-40db-9d3f-8917d6f72354
 aplicar_filtro(imagen, mi_filtro)
 
-# ╔═╡ b9959008-fbf2-48fd-9b16-d19fd5dad721
-correcto(text) = Markdown.MD(Markdown.Admonition("correct", "¡Correcto!", [text]));
-
 # ╔═╡ dbf3179c-f35c-4e80-8aa8-b5093d6fde87
 pista(text) = Markdown.MD(Markdown.Admonition("hint", "Pista", [text]));
+
+# ╔═╡ b9959008-fbf2-48fd-9b16-d19fd5dad721
+correcto(text) = Markdown.MD(Markdown.Admonition("correct", "¡Correcto!", [text]));
 
 # ╔═╡ e0d5e5af-6dcf-49d4-90fc-94a4455d4c8d
 if mi_filtro == [0.0 0.0 0.0; 1.0 0.0 0.0; 0.0 0.0 0.0]
@@ -1592,10 +1592,10 @@ version = "17.4.0+2"
 # ╟─bb23b4ec-fbb6-4978-a3ef-f78b53a8339d
 # ╟─e0d5e5af-6dcf-49d4-90fc-94a4455d4c8d
 # ╟─cb91303d-1ba0-4c07-a3f4-cdbbd0ab3468
-# ╠═5737939b-0bb9-4ddf-8948-6356e60d79f3
+# ╟─5737939b-0bb9-4ddf-8948-6356e60d79f3
 # ╠═746ff659-88ab-4ff4-8cba-43c798cacd3e
 # ╟─aa90424b-1514-4778-9b09-580a29a38cec
-# ╠═dbf3179c-f35c-4e80-8aa8-b5093d6fde87
-# ╠═b9959008-fbf2-48fd-9b16-d19fd5dad721
+# ╟─dbf3179c-f35c-4e80-8aa8-b5093d6fde87
+# ╟─b9959008-fbf2-48fd-9b16-d19fd5dad721
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
