@@ -4,7 +4,7 @@
     "href": "index.html",
     "title": "Demostraciones de Cálculo Científico con Julia",
     "section": "",
-    "text": "Cálculo de la aceleración de la gravedad\nFiltros de imágenes",
+    "text": "A continuación se presentan una serie de demostraciones de cálculo científico con Julia, que demuestran la potencia y la naturalidad de este lenguaje para modelar y resolver problemas científicos.\n\nCálculo de la aceleración de la gravedad\nCálculo del perímetro y del área de un círculo\nFiltros de imágenes",
     "crumbs": [
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>Demostraciones de Cálculo Científico con Julia</span>"
     ]

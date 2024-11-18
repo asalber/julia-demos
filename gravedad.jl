@@ -20,10 +20,8 @@ end
 md"""
 # Cálculo científico con Julia 🧪
 
-
-
 !!! question "¿Qué es Julia?"
-	Julia es un moderno lenguaje de programación especialmente diseñado para la construcción de modelos matemáticos.
+	Julia es un moderno lenguaje de programación especialmente diseñado para el cálculo científico que destaca principalmente en la construcción de modelos matemáticos.
 """
 
 # ╔═╡ 41a406f0-d305-11ee-2ea6-856db6ede06d

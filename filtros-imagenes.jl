@@ -65,10 +65,7 @@ Observa cómo cambia de color el píxel de más abajo cuando movelos el deslizad
 
 
 # ╔═╡ c4da04ab-f7e0-46fd-b352-e518e4733608
-color = @bind color PlutoUI.Slider(0:0.05:1)
-
-# ╔═╡ 50bf50c2-8efc-446e-9ff7-dd4f6b08a07f
-md"""Nivel de gris: $color"""
+color = @bind color PlutoUI.Slider(0:0.05:1, show_value=true)
 
 # ╔═╡ 96a4b35a-5a3a-4ad0-9ffe-306db46d1c03
 pixel = Gray.(color)
@@ -223,17 +220,17 @@ Ahora prueba a definir tus propios filtros y observa como se transforma la image
 
 # ╔═╡ 3bcfeef1-4960-433c-9813-60940445e423
 begin
-	a1 = @bind a1_s NumberField(-1:0.1:1, default=0);
-	a2 = @bind a2_s NumberField(-1:0.1:1, default=0);
-	a3 = @bind a3_s NumberField(-1:0.1:1, default=0);
+	a1 = @bind a1_s NumberField(-10:0.5:10, default=0);
+	a2 = @bind a2_s NumberField(-10:0.5:10, default=0);
+	a3 = @bind a3_s NumberField(-10:0.5:10, default=0);
 
-	b1 = @bind b1_s NumberField(-1:0.1:1, default=0);
-	b2 = @bind b2_s NumberField(-1:0.1:1, default=0);
-	b3 = @bind b3_s NumberField(-1:0.1:1, default=0);
+	b1 = @bind b1_s NumberField(-10:0.5:10, default=0);
+	b2 = @bind b2_s NumberField(-10:0.5:10, default=0);
+	b3 = @bind b3_s NumberField(-10:0.5:10, default=0);
 
-	c1 = @bind c1_s NumberField(-1:0.1:1, default=0);
-	c2 = @bind c2_s NumberField(-1:0.1:1, default=0);
-	c3 = @bind c3_s NumberField(-1:0.1:1, default=0);
+	c1 = @bind c1_s NumberField(-10:0.5:10, default=0);
+	c2 = @bind c2_s NumberField(-10:0.5:10, default=0);
+	c3 = @bind c3_s NumberField(-10:0.5:10, default=0);
 	
 	md"""Matriz de convolución"""
 end
@@ -245,9 +242,6 @@ begin
 	 	  $(b1) $(b2) $(b3)\
 	      $(c1) $(c2) $(c3) """
 end
-
-# ╔═╡ 527bfb88-5eec-40aa-ab46-f02d0e737ac6
-@bind evaluar Button("Aplicar")
 
 # ╔═╡ bb23b4ec-fbb6-4978-a3ef-f78b53a8339d
 md"""
@@ -275,10 +269,7 @@ aplicar_filtro(imagen, filtro_dispersion)
 aplicar_filtro(imagen, seleccion_filtro)
 
 # ╔═╡ 9d42dd93-98b4-40db-9d3f-8917d6f72354
-let
-	evaluar
-	aplicar_filtro(imagen, mi_filtro)
-end
+aplicar_filtro(imagen, mi_filtro)
 
 # ╔═╡ b9959008-fbf2-48fd-9b16-d19fd5dad721
 correcto(text) = Markdown.MD(Markdown.Admonition("correct", "¡Correcto!", [text]));
@@ -294,8 +285,8 @@ else
 end
 
 # ╔═╡ 5737939b-0bb9-4ddf-8948-6356e60d79f3
-if filter == [0.0 -1.0 0.0; -1.0 5.011872336272722 -1.0; 0.0 -1.0 0.0]
-	correctp(md"""**¡Enhorabuena!** Esta pregunta era difícil pero ahora ya sabes cómo funciona un programa de edición de imágenes.""")
+if mi_filtro == [0.0 -1.0 0.0; -1.0 5 -1.0; 0.0 -1.0 0.0]
+	correcto(md"""**¡Enhorabuena!** Esta pregunta era difícil pero ahora ya sabes cómo funciona un programa de edición de imágenes.""")
 else
 	pista(md"""El filtro de nitidez se consigue aplicando el filtro de detección de bordes sobre el filtro original.""")
 end
@@ -1562,15 +1553,14 @@ version = "17.4.0+2"
 """
 
 # ╔═╡ Cell order:
-# ╟─a81b32f7-17ac-47ba-9fe1-e0ecf6b8d1cb
-# ╟─8fbfb3df-9378-46a2-9bd5-5f87e5d8711d
+# ╠═a81b32f7-17ac-47ba-9fe1-e0ecf6b8d1cb
+# ╠═8fbfb3df-9378-46a2-9bd5-5f87e5d8711d
 # ╟─04a5c6d4-f8d5-11ed-141a-35481b811ee9
 # ╟─2fd71d04-bf7b-45e8-9177-4f5c7dc1f8c7
 # ╟─a3c6d772-73e2-4858-9af4-0dbd69970b76
 # ╟─270c9dff-b94f-4147-bc3b-e89975572a71
 # ╠═f8265d50-2b71-4750-8681-ea4f32ad32d5
-# ╟─c4da04ab-f7e0-46fd-b352-e518e4733608
-# ╟─50bf50c2-8efc-446e-9ff7-dd4f6b08a07f
+# ╠═c4da04ab-f7e0-46fd-b352-e518e4733608
 # ╟─96a4b35a-5a3a-4ad0-9ffe-306db46d1c03
 # ╟─3f830a9b-3a78-4d18-ae3e-933778402a25
 # ╠═d2441220-6abe-42ed-8f9c-3b37c3f66379
@@ -1584,7 +1574,7 @@ version = "17.4.0+2"
 # ╟─ebb63415-2738-47f3-b0ef-0fd6e6bac259
 # ╠═44d594ff-a25b-4455-be56-863345c67b68
 # ╟─d752805d-ba2c-4133-a556-46a1da734557
-# ╟─031797e7-4afa-43c2-b426-6f6be6d646ad
+# ╠═031797e7-4afa-43c2-b426-6f6be6d646ad
 # ╟─d729f8b4-05e2-4863-b8c4-39b37646c36b
 # ╟─f5e12f08-95b8-47bd-a7eb-4624711c84eb
 # ╠═4402408c-3def-4f8e-841b-efd7aa43ba02
@@ -1598,15 +1588,14 @@ version = "17.4.0+2"
 # ╟─a174850b-91cc-4463-ab28-61ca0a7221c6
 # ╟─3bcfeef1-4960-433c-9813-60940445e423
 # ╟─f844bca2-edb7-45ec-b860-5f1e0b8b6bc0
-# ╟─527bfb88-5eec-40aa-ab46-f02d0e737ac6
 # ╠═9d42dd93-98b4-40db-9d3f-8917d6f72354
 # ╟─bb23b4ec-fbb6-4978-a3ef-f78b53a8339d
 # ╟─e0d5e5af-6dcf-49d4-90fc-94a4455d4c8d
 # ╟─cb91303d-1ba0-4c07-a3f4-cdbbd0ab3468
-# ╟─5737939b-0bb9-4ddf-8948-6356e60d79f3
-# ╟─aa90424b-1514-4778-9b09-580a29a38cec
-# ╟─b9959008-fbf2-48fd-9b16-d19fd5dad721
-# ╟─dbf3179c-f35c-4e80-8aa8-b5093d6fde87
+# ╠═5737939b-0bb9-4ddf-8948-6356e60d79f3
 # ╠═746ff659-88ab-4ff4-8cba-43c798cacd3e
+# ╟─aa90424b-1514-4778-9b09-580a29a38cec
+# ╠═dbf3179c-f35c-4e80-8aa8-b5093d6fde87
+# ╠═b9959008-fbf2-48fd-9b16-d19fd5dad721
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

@@ -3,5 +3,8 @@ title: Demostraciones de Cálculo Científico con Julia
 author: Alfredo Sánchez Alberca ([asalber@ceu.es](mailto:asalber@ceu.es))
 ---
 
+A continuación se presentan una serie de demostraciones de cálculo científico con Julia, que demuestran la potencia y la naturalidad de este lenguaje para modelar y resolver problemas científicos.
+
 1.  [Cálculo de la aceleración de la gravedad](gravedad.html)
-2.  [Filtros de imágenes](filtros-imagenes)
+2.  [Cálculo del perímetro y del área de un círculo](calculo-area-circulo.html)
+3.  [Filtros de imágenes](filtros-imagenes)
