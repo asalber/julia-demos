@@ -38,178 +38,186 @@ md"""
 
 # ╔═╡ 4eb49696-55c7-47d1-bb13-5ef79885b5c2
 md"""
-## Cálculo del perímetro y del área de un círculo
+# Cálculo del área de un círculo mediante la suma de perímetros
 
-En este taller veremos como utilizar el **método de agotamiento** para aproximar el perímetro y el área de un círculo con Julia.
+En este taller veremos como usar Julia para cálcular de manera aproximada el área de un círculo medinte la suma de los perímetros de los círculos inscritos en él.
+
+El área de un círculo de radio $r$ puede descomponerse como la suma de los perímetros de los círculos de radio menor o igual que $r$.
 """
 
-# ╔═╡ 1534b360-a534-11ef-3907-85c979017697
+# ╔═╡ b8e6acb3-b3b0-4f1d-af2e-f21787c3b17f
+begin
+radio = @bind r Slider(0:0.04:2, show_value=true)
+md"""Radio $radio"""
+end
+
+# ╔═╡ ae15ff17-35e5-460c-9a60-dd08902b416b
 md"""
-
-!!! info "Método de agotamiento"
-	En el siglo III A.C [Arquímedes](https://es.wikipedia.org/wiki/Arqu%C3%ADmedes) usó el [método por agotamiento](https://es.wikipedia.org/wiki/M%C3%A9todo_por_agotamiento) para calcular el área encerrada por una circunferencia (y de paso el valor de $\pi$). La idea consiste en inscribir en la circunferencia polígonos regulares con un número de lados cada vez mayor.
-	
-	![Polígonos regulares inscritos en la circunferencia](https://aprendeconalf.es/analisis-practicas-julia/img/sucesiones/poligonos-circunferencia.png)
-
+!!! question "¿Cuánto mide el perímetro de cada uno de estos círculos"
 """
 
-# ╔═╡ 1aaea6d1-ce01-413b-b2f9-6885ba5a6196
-md"""
-## Cálculo del perímetro de los polígonos inscritos
-
-El perímetro de estos polígonos puede calcularse fácilmente descomponiendo los polígonos regulares en triángulos como en el siguiente ejemplo.
-
-![Descomponsición de un polígono en triángulos](https://aprendeconalf.es/analisis-practicas-julia/img/sucesiones/area-poligono-regular-inscrito.png)
-"""
-
-# ╔═╡ 3f6ba26a-3523-467a-ba21-3f24f42fb39c
-md"""
-!!! question "¿Cuál es la base de cada uno de estos triángulos?"
-"""
-
-# ╔═╡ 07e9f020-efb7-46fc-8751-a311fdd1d034
+# ╔═╡ 048b1375-bb2b-41cc-946e-ec12e3c4590f
 begin
 sol1 = @bind solucion1 CheckBox()
 	md"**MOSTRAR SOLUCIÓN** $sol1"
 end
 
-# ╔═╡ 86aa5956-7846-41c9-8b8f-b650eeff5463
+# ╔═╡ cfae0f43-97de-4820-bb42-2d3f3965cf78
 if solucion1 
 	md"""
-	La base es 
-	
-	$$2r\operatorname{sen}\left(\frac{\pi}{n}\right)$$.
+	El perímetro de un círculo de radio $r$ es $2\pi r$.
 	"""
 end
 
-# ╔═╡ d6e22d21-171a-4002-b5f7-b6bf9413efa0
+# ╔═╡ 9491b7b7-e03f-4932-9d48-a256bf11e545
 md"""
-## Cálculo del área de los polígonos inscritos
+!!! question "¿Cuánto vale la suma de estos perímetros?"
 """
 
-# ╔═╡ add499af-fd3e-43e2-94fb-28e5ebd30107
-md"""
-!!! question "¿Cuál es el área de cada uno de estos triángulos?"
-"""
-
-# ╔═╡ c2dc61df-173e-4c95-8875-35b324a1fb24
+# ╔═╡ 1543dd1e-7dcd-48f9-a64b-c76dfe3e2117
 begin
 sol2 = @bind solucion2 CheckBox()
 	md"**MOSTRAR SOLUCIÓN** $sol2"
 end
 
-# ╔═╡ 7d16979a-d188-450b-b952-2595c02d39e8
+# ╔═╡ 81883645-c930-4cf4-9163-93aaf73460f8
+if solucion2
+	md"""Radio $radio"""
+end
+
+# ╔═╡ 9be4553a-8dac-47d5-97e2-ed3f95004d69
 if solucion2
 	md"""
-	El área es 
+	Ahora la suma de los perímetros nos la da el área del triángulo.
 	
-	$$\frac{1}{2}2r\operatorname{sen}\left(\frac{\pi}{n}\right)r\cos\left(\frac{\pi}{n}\right) = \frac{1}{2}r^2\operatorname{sen}\left(\frac{2\pi}{n}\right).$$
+	| Base | Altura | Suma de perímetros (Área) |
+	|:-:|:-:|:-:|
+	| $(r) | $(2*pi*r) | $(pi * r^2) |
 	"""
 end
 
-# ╔═╡ 075def84-f8fb-4bd0-a431-8911a3ae1119
-md"""
-## Aproximación del perímetro y del área de la circunferencia
 
-Usando las fórmulas anteriores podemos definir una función en Julia para calcular el el perímetro y otra para el área de un polígono regular de $n$ lados. Para simplificar, tomaremos un círculo de radio $r=1$.
+# ╔═╡ df764fe7-ac1e-4ccd-bd19-401ae369bb39
+md"""
+## Cálculo del área mediante una integral
+
+Podemos llegar al mismo resultado utilizando el [Teorema Fundamental del Cálculo](https://aprendeconalf.es/analisis-manual/08-integrales.html#thm-teorema-fundamental-calculo-2), que establece que la variación del área puede calcularse mediante la integral definida de la tasa de variación del área.
 """
 
-# ╔═╡ 4dcaef0c-b003-4ef3-afb3-7d1b3220e747
-p(n) = 2n * sin(PI/n)
+# ╔═╡ 10fc8deb-6d18-4534-9215-b1b12b8d2d63
+md"""
+!!! question "¿Cuál será la variación del area de un círculo de radio r si le añadimos una variación infinitesimal al radio?"
+"""
 
-# ╔═╡ cf8c210a-5cc1-43fb-8557-9f0ed61535dd
-a(n) = n * sin(2*PI/n) / 2
-
-# ╔═╡ b8e6acb3-b3b0-4f1d-af2e-f21787c3b17f
+# ╔═╡ d70f169d-a238-4977-b39b-ae097e576097
 begin
-lados = @bind n Slider(3:1000, show_value=true)
-md"""Número de lados $lados"""
+sol3 = @bind solucion3 CheckBox()
+	md"**MOSTRAR SOLUCIÓN** $sol3"
 end
 
-# ╔═╡ f9af3965-b7dc-4cd2-8665-18bb0953ce4d
+# ╔═╡ 5561e6bd-6941-439d-9281-407b739e8bb2
+if solucion3
+	scatter([0], [0], marker=:circle, markersize=100, xlim = (-2, 2), ylim = (-2, 2), legend = false)
+	t = 0:0.01:2π
+	plot!(cos.(t), sin.(t), linewidth = 2, aspect_ratio = 1)
+end
+
+# ╔═╡ e6758099-7fcf-48d0-8641-a624ca243b0a
+if solucion3
+	md"""
+		$da = a'\cdot dr = p\cdot dr = 2\pi r \cdot dr$
+		"""
+end
+
+# ╔═╡ 56168217-9c5f-4d5b-8da6-4a80e67ae172
 md"""
-| Perímetro | Área |
-|:---------:|:-----:|
-|**$(float(p(n)))**|**$(float(a(n)))**|
+!!! question "¿Qué integral nos permite calcular el área de un círculo de radio 2?"
 """
 
-# ╔═╡ 9781c76f-8125-43a5-b26c-4f0867e51e41
-md"""
-!!! question "¿Hacia qué valor tiende el perímetro? ¿Y el área?"
-"""
-
-# ╔═╡ 4e0cedb1-3f37-41a1-98a0-207a79277380
-md"""
-## Cálculo del límite
-
-Parece evidente que el perímetro de la circunferencia aparecerá en el límite cuando el número de lados tiende a infinito del perímetro del polígono de $n$ lados. Y lo mismo ocurre con el área.
-
-En Julia podemos calcular límites con la función `limit` del paquete `SymPy`.
-"""
-
-# ╔═╡ 37d2724f-eade-4cf2-9e9c-9c87f42ee5fb
+# ╔═╡ d26afe3a-0136-484e-9d1d-fded1700a17e
 begin
-@syms x
-perimetro = limit(p(x), x=>oo)
-area = limit(a(x), x=>oo)
-md"""
-Límite del perímetro: 
-``\lim_{n\to\infty} n\operatorname{sen}\left(\frac{\pi}{n}\right) =`` $perimetro
+sol4 = @bind solucion4 CheckBox()
+	md"**MOSTRAR SOLUCIÓN** $sol4"
+end
 
-Límite del área: 
-``\lim_{n\to\infty} \frac{1}{2}n\operatorname{sen}\left(\frac{2\pi}{n}\right) =`` $area
-"""
+# ╔═╡ 96daecc0-c403-446d-be6e-587af003addd
+if solucion4
+	md"""$\int_0^2 2\pi r\,dr = \left[\pi r^2\right]_0^2 = 4\pi$"""
 end
 
 # ╔═╡ 43220735-9069-4ac1-94a6-2faf42f80aaa
 md"""
 !!! warning "!Enhorabuena!"
 
-	Ahora ya sabes cómo los antiguos griegos fueron capaces de obtener una buena aproximación del número $\pi$ usando este ingenioso método.
+	Ahora ya sabes cómo podemos calcular el área de un círculo acumulando infinitas variciones infinitesimales del área, es decir, integrando su derivada. Esto es en el fondo lo que plantea el Teorema Fundamental del cálculo, que conecta el concepto de integral con el de derivada.
 """
 
 # ╔═╡ 1243aac7-ba90-4c8d-8c61-77bc8e4b6b8b
 pista(texto) = Markdown.MD(Markdown.Admonition("hint", "Pista", [texto]));
 
-# ╔═╡ 98b1b285-405c-4e56-a2d2-3d420e7d99b1
-pista(md"""Dividiendo el ángulo $\alpha$ por la mitad se obtienen triángulos rectángulos cuyo cateto opuesto es la mitad de la base del triángulo original.""")
+# ╔═╡ 9e3b167b-7142-4d1d-85f9-672974bcbf9d
+pista(md"""En unos ejes cartesianos, representa el perímetro de cada círculocomo un segmento vertical sobre el valor de $x$ correspondiente al radio del círculo.""")
 
-# ╔═╡ 6ffee859-06dc-45b2-b972-14ed6e6a09ea
-pista(md"""Dividiendo el ángulo $\alpha$ por la mitad se obtienen triángulos rectángulos cuyo cateto contiguo es la altura del triángulo original.""")
+
+# ╔═╡ 654e00ee-b9b6-46d3-a50b-c97dcf7f4d54
+pista(md"""La variación infinitesimal del area es el perímetro del círculo de radio $r$""")
+
+# ╔═╡ f0534e59-3012-4814-b1e5-40fae7c6eb27
+pista(md"""La variación del área del círculo cuando el radio pasa de valer $a$ a valer $b$ lo da la integral definida del perímetro entre esos límites.
+
+$$A(b)-A(a)=\int_a^b 2\pi r\,dr$$""")
 
 # ╔═╡ fb49178f-9211-4962-a11a-cd5b419e56f5
 correcto(text) = Markdown.MD(Markdown.Admonition("correct", "¡Correcto!", [text]));
 
 # ╔═╡ 283ac4c6-3c73-4db8-8a1d-38d11246adfa
 begin
-	function dibuja_polígono(n, r = 1)
+	function dibuja_circulos(r = 1)
 	    """
-	    Función que dibuja un polígono regular de n lados inscrito en un círculo de radio r.
+	    Función que dibuja la descomposición del área de un círculo de radio r como suma de perímetros.
 	
-	    Dependencias:
-	    - Base.Iterators
 	    """
-	    # Calculamos los ángulos de la descomposición en triángulos
-	    θs = 2 * π * (0:n) / n
-	    # Calculamos las coordenadas de los vértices
-	    xs = r * cos.(θs)
-	    ys = r * sin.(θs)
-	    # Anadimos el origen a los vectores de coordenadas de los vértices.
-	    x2s = collect(flatten([(i,0) for i = xs]))
-	    y2s = collect(flatten([(i,0) for i = ys]))
-	    # Dibujamos el círculo
+	    # Dibujamos los círculos con radios de 0 a r, cada 0.1.
 	    t = 0:0.01:2π
-	    plot(r * cos.(t), r * sin.(t), linewidth = 2, aspect_ratio=:equal, legend=:none)
-	    # Dibujamos el polígono
-	    plot!(xs, ys)
-	    # Dibujamos la descomposición del polígono en triángulos
-	    return plot!(x2s, y2s, color=:gray)
+		plot(xlim = (-2, 2), ylim = (-2, 2))
+		for i = 0:0.04:r
+			plot!(i*cos.(t), i*sin.(t), linewidth = 2)
+		end
+		plot!(aspect_ratio = 1, legend = false)
 	end
 	nothing
 end
 
 # ╔═╡ ac63dbf4-85c9-49d1-9c01-b9778eb5765f
-dibuja_polígono(n)
+dibuja_circulos(r)
+
+# ╔═╡ 84b7de29-7d0a-42ef-ba08-ccd775e35cc3
+begin
+	function dibuja_perimetros(r = 1)
+	    """
+	    Función que dibuja a longitud de los perímetros de círculos de radio menor o igual que r.
+	
+	    """
+	    # Dibujamos los círculos con radios de 0 a r, cada 0.1.
+		plot(layout = (1, 2))
+		t = 0:0.01:2π
+		plot!(xlim = (-2, 2), ylim = (-2, 2), subplot = 1)
+		for i = 0:0.04:r
+			plot!(i*cos.(t), i*sin.(t), linewidth = 2, aspect_ratio = 1, subplot = 1)
+		end
+		plot!(xlims = (0, 2), ylim = (0, 12.5), subplot = 2)
+		for i = 0:0.04:r
+			plot!([i, i], [0, 2*pi*i], linewidth = 2, subplot = 2)
+		end
+		plot!(legend = false)
+	end
+	nothing
+end
+
+# ╔═╡ 5561efb6-34e5-4956-a045-9e8bf0d7af7b
+if solucion2
+	dibuja_perimetros(r)
+end
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1453,30 +1461,32 @@ version = "1.4.1+1"
 # ╔═╡ Cell order:
 # ╟─03c7ad73-e71e-4df4-9ebc-a4a5b16acd0a
 # ╟─4eb49696-55c7-47d1-bb13-5ef79885b5c2
-# ╟─1534b360-a534-11ef-3907-85c979017697
-# ╟─1aaea6d1-ce01-413b-b2f9-6885ba5a6196
-# ╟─3f6ba26a-3523-467a-ba21-3f24f42fb39c
-# ╟─98b1b285-405c-4e56-a2d2-3d420e7d99b1
-# ╟─07e9f020-efb7-46fc-8751-a311fdd1d034
-# ╟─86aa5956-7846-41c9-8b8f-b650eeff5463
-# ╟─d6e22d21-171a-4002-b5f7-b6bf9413efa0
-# ╟─add499af-fd3e-43e2-94fb-28e5ebd30107
-# ╟─6ffee859-06dc-45b2-b972-14ed6e6a09ea
-# ╟─c2dc61df-173e-4c95-8875-35b324a1fb24
-# ╟─7d16979a-d188-450b-b952-2595c02d39e8
-# ╟─075def84-f8fb-4bd0-a431-8911a3ae1119
-# ╠═4dcaef0c-b003-4ef3-afb3-7d1b3220e747
-# ╠═cf8c210a-5cc1-43fb-8557-9f0ed61535dd
 # ╟─b8e6acb3-b3b0-4f1d-af2e-f21787c3b17f
 # ╟─ac63dbf4-85c9-49d1-9c01-b9778eb5765f
-# ╟─f9af3965-b7dc-4cd2-8665-18bb0953ce4d
-# ╟─9781c76f-8125-43a5-b26c-4f0867e51e41
-# ╟─4e0cedb1-3f37-41a1-98a0-207a79277380
-# ╟─37d2724f-eade-4cf2-9e9c-9c87f42ee5fb
+# ╟─ae15ff17-35e5-460c-9a60-dd08902b416b
+# ╟─048b1375-bb2b-41cc-946e-ec12e3c4590f
+# ╟─cfae0f43-97de-4820-bb42-2d3f3965cf78
+# ╟─9491b7b7-e03f-4932-9d48-a256bf11e545
+# ╟─9e3b167b-7142-4d1d-85f9-672974bcbf9d
+# ╟─1543dd1e-7dcd-48f9-a64b-c76dfe3e2117
+# ╟─81883645-c930-4cf4-9163-93aaf73460f8
+# ╟─5561efb6-34e5-4956-a045-9e8bf0d7af7b
+# ╟─9be4553a-8dac-47d5-97e2-ed3f95004d69
+# ╟─df764fe7-ac1e-4ccd-bd19-401ae369bb39
+# ╟─10fc8deb-6d18-4534-9215-b1b12b8d2d63
+# ╟─654e00ee-b9b6-46d3-a50b-c97dcf7f4d54
+# ╟─d70f169d-a238-4977-b39b-ae097e576097
+# ╟─5561e6bd-6941-439d-9281-407b739e8bb2
+# ╟─e6758099-7fcf-48d0-8641-a624ca243b0a
+# ╟─56168217-9c5f-4d5b-8da6-4a80e67ae172
+# ╟─f0534e59-3012-4814-b1e5-40fae7c6eb27
+# ╟─d26afe3a-0136-484e-9d1d-fded1700a17e
+# ╟─96daecc0-c403-446d-be6e-587af003addd
 # ╟─43220735-9069-4ac1-94a6-2faf42f80aaa
 # ╟─26b4253f-7d15-47f4-af13-398a421c76f2
 # ╟─1243aac7-ba90-4c8d-8c61-77bc8e4b6b8b
 # ╟─fb49178f-9211-4962-a11a-cd5b419e56f5
 # ╟─283ac4c6-3c73-4db8-8a1d-38d11246adfa
+# ╟─84b7de29-7d0a-42ef-ba08-ccd775e35cc3
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
