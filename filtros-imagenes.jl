@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.20.3
+# v0.20.4
 
 using Markdown
 using InteractiveUtils
@@ -29,7 +29,7 @@ md"""
 
 # ╔═╡ 8fbfb3df-9378-46a2-9bd5-5f87e5d8711d
 md"""
-## Filtros para imágenes
+# Filtros para imágenes
 
 En este taller veremos como las imágenes pueden representarse matemáticamente como **matrices** y cómo podemos diseñar filtros para cambiar el aspecto de las imágenes con Julia.
 """
@@ -39,7 +39,7 @@ md"""
 !!! info "Representación de imágenes como matrices"
 	Si miras con lupa una imagen digital, verás está formada por pequeños puntitos de colores llamados **píxeles** que se organizan en forma de tabla o **matriz** conocida como **mapa de bits**. El número de filas y columnas de esa matriz es la **resolución de la imagen**.
 	
-	El color de cada pixel se obtiene mediante la combinación de los colores básicos R (red), G (green) y Blue (blue) y esa combianción se puede expresar como un código numérico.
+	El color de cada pixel se obtiene mediante la combinación de los colores básicos R (red), G (green) y B (blue) y esa combianción se puede expresar como un código numérico.
 """
 
 # ╔═╡ 2fd71d04-bf7b-45e8-9177-4f5c7dc1f8c7
@@ -60,9 +60,6 @@ Podemos definir fácilmente una variable en Julia para representar un pixel con 
 
 Observa cómo cambia de color el píxel de más abajo cuando movelos el deslizador del nivel del gris.
 """
-
-# ╔═╡ f8265d50-2b71-4750-8681-ea4f32ad32d5
-
 
 # ╔═╡ c4da04ab-f7e0-46fd-b352-e518e4733608
 color = @bind color PlutoUI.Slider(0:0.05:1, show_value=true)
@@ -254,12 +251,15 @@ md"""
 """
 
 # ╔═╡ aa90424b-1514-4778-9b09-580a29a38cec
+begin
 # Función para mostrar la imagen original y la filtrada una al lado de otra.
 function aplicar_filtro(imagen, filtro)
 	alto, ancho = size(imagen)
 	imagen_filtrada = Gray.(convolucion(imagen, filtro))
 	imagen_original = imagen[2:alto-1, 2:ancho-1]
 	[imagen_original imagen_filtrada]
+end
+nothing
 end
 
 # ╔═╡ a65c3d3c-cdc5-4125-a527-787077d9acf9
@@ -1553,14 +1553,13 @@ version = "17.4.0+2"
 """
 
 # ╔═╡ Cell order:
-# ╠═a81b32f7-17ac-47ba-9fe1-e0ecf6b8d1cb
-# ╠═8fbfb3df-9378-46a2-9bd5-5f87e5d8711d
+# ╟─a81b32f7-17ac-47ba-9fe1-e0ecf6b8d1cb
+# ╟─8fbfb3df-9378-46a2-9bd5-5f87e5d8711d
 # ╟─04a5c6d4-f8d5-11ed-141a-35481b811ee9
 # ╟─2fd71d04-bf7b-45e8-9177-4f5c7dc1f8c7
 # ╟─a3c6d772-73e2-4858-9af4-0dbd69970b76
 # ╟─270c9dff-b94f-4147-bc3b-e89975572a71
-# ╠═f8265d50-2b71-4750-8681-ea4f32ad32d5
-# ╠═c4da04ab-f7e0-46fd-b352-e518e4733608
+# ╟─c4da04ab-f7e0-46fd-b352-e518e4733608
 # ╟─96a4b35a-5a3a-4ad0-9ffe-306db46d1c03
 # ╟─3f830a9b-3a78-4d18-ae3e-933778402a25
 # ╠═d2441220-6abe-42ed-8f9c-3b37c3f66379
@@ -1574,7 +1573,7 @@ version = "17.4.0+2"
 # ╟─ebb63415-2738-47f3-b0ef-0fd6e6bac259
 # ╠═44d594ff-a25b-4455-be56-863345c67b68
 # ╟─d752805d-ba2c-4133-a556-46a1da734557
-# ╠═031797e7-4afa-43c2-b426-6f6be6d646ad
+# ╟─031797e7-4afa-43c2-b426-6f6be6d646ad
 # ╟─d729f8b4-05e2-4863-b8c4-39b37646c36b
 # ╟─f5e12f08-95b8-47bd-a7eb-4624711c84eb
 # ╠═4402408c-3def-4f8e-841b-efd7aa43ba02
@@ -1593,7 +1592,7 @@ version = "17.4.0+2"
 # ╟─e0d5e5af-6dcf-49d4-90fc-94a4455d4c8d
 # ╟─cb91303d-1ba0-4c07-a3f4-cdbbd0ab3468
 # ╟─5737939b-0bb9-4ddf-8948-6356e60d79f3
-# ╠═746ff659-88ab-4ff4-8cba-43c798cacd3e
+# ╟─746ff659-88ab-4ff4-8cba-43c798cacd3e
 # ╟─aa90424b-1514-4778-9b09-580a29a38cec
 # ╟─dbf3179c-f35c-4e80-8aa8-b5093d6fde87
 # ╟─b9959008-fbf2-48fd-9b16-d19fd5dad721

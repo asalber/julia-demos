@@ -8,4 +8,5 @@ A continuación se presentan una serie de demostraciones de cálculo científico
 1.  [Cálculo de la aceleración de la gravedad](gravedad.html)
 2.  [Cálculo del perímetro y del área de un círculo](calculo-perimetro-circulo.html)
 3.  [Cálculo del área de un círculo mediante el Teorema Fundamental del Cálculo](calculo-area-circulo.html)
-4.  [Filtros de imágenes](filtros-imagenes)
+4.  [Filtros de imágenes](filtros-imagenes.html)
+5.  [Cálculo del perímetro y el área del fractal del copo de nieve](fractal-copo-nieve.html)

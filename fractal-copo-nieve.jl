@@ -26,7 +26,7 @@ macro bind(def, element)
 end
 
 # ╔═╡ 26b4253f-7d15-47f4-af13-398a421c76f2
-using SymPy, PlutoUI, Plots, Base.Iterators
+using SymPy, PlutoUI, Plots, LaTeXStrings, Latexify
 
 # ╔═╡ 03c7ad73-e71e-4df4-9ebc-a4a5b16acd0a
 md"""
@@ -38,187 +38,349 @@ md"""
 
 # ╔═╡ 4eb49696-55c7-47d1-bb13-5ef79885b5c2
 md"""
-## Cálculo del perímetro y del área de un círculo
+# Cálculo del perímero y el area del fractal del copo de nieve.
 
-En este taller veremos como utilizar el **método de agotamiento** para aproximar el perímetro y el área de un círculo con Julia.
+En este taller veremos como calcular el perímetro y el área del famoso  [fractal del copo de nieve de Koch](https://es.wikipedia.org/wiki/Copo_de_nieve_de_Koch) de mediante series con Julia.
 """
 
 # ╔═╡ 1534b360-a534-11ef-3907-85c979017697
 md"""
 
-!!! info "Método de agotamiento"
-	En el siglo III A.C [Arquímedes](https://es.wikipedia.org/wiki/Arqu%C3%ADmedes) usó el [método por agotamiento](https://es.wikipedia.org/wiki/M%C3%A9todo_por_agotamiento) para calcular el área encerrada por una circunferencia (y de paso el valor de $\pi$). La idea consiste en inscribir en la circunferencia polígonos regulares con un número de lados cada vez mayor.
-	
-	![Polígonos regulares inscritos en la circunferencia](https://aprendeconalf.es/analisis-practicas-julia/img/sucesiones/poligonos-circunferencia.png)
+!!! info "Construcción del fractal del copo de nieve"
+	El fractal del copo de nieve se construye partiendo de un triángulo equilátero y alterando, de forma recursiva, cada segmento de línea de las siguiente manera:
 
+	1. Dividir el segmento de linea en tres partes iguales.
+	2. Dibujar hacia el exterior de la figura un triángulo equilátero a partir del segmento medio obtenido en el paso anterior. 
+	3. Borrar el segmento medio obtenido en el primer paso.
+	Repetir el proceso para los nuevos segmentos.
 """
+
+# ╔═╡ b8e6acb3-b3b0-4f1d-af2e-f21787c3b17f
+begin
+iteracion = @bind n Slider(0:10, show_value=true)
+md"""Iteración $iteracion"""
+end
 
 # ╔═╡ 1aaea6d1-ce01-413b-b2f9-6885ba5a6196
 md"""
-## Cálculo del perímetro de los polígonos inscritos
-
-El perímetro de estos polígonos puede calcularse fácilmente descomponiendo los polígonos regulares en triángulos como en el siguiente ejemplo.
-
-![Descomponsición de un polígono en triángulos](https://aprendeconalf.es/analisis-practicas-julia/img/sucesiones/area-poligono-regular-inscrito.png)
+## Cálculo del perímetro del fractal
 """
 
 # ╔═╡ 3f6ba26a-3523-467a-ba21-3f24f42fb39c
 md"""
-!!! question "¿Cuál es la base de cada uno de estos triángulos?"
+!!! question "¿Cuál es el número de lados del copo en la iteración n?"
 """
 
 # ╔═╡ 07e9f020-efb7-46fc-8751-a311fdd1d034
 begin
+lados(n) = 3*4^n
 sol1 = @bind solucion1 CheckBox()
-	md"**MOSTRAR SOLUCIÓN** $sol1"
+md"**MOSTRAR SOLUCIÓN** $sol1"
 end
 
 # ╔═╡ 86aa5956-7846-41c9-8b8f-b650eeff5463
 if solucion1 
 	md"""
-	La base es 
+	El número de lados en las primeras etapas es
+
+	| Etapa | Número de lados |
+	|:-:|:-:|
+	|0 | 3 |
+	|1 | 12 |
+	|2 | 48 |
+	|3 | 192 |
+
+	Como se puede observar, en cada iteración el número de lados se multiplica por 4, de manera que el número de lados en la iteración $n$ es
+
+	$$\mbox{lados(n)} = 3 \times
+	4^n$$
+	"""
+end
+
+# ╔═╡ 1f8b511c-1175-48fe-8880-45ee5b4bd381
+md"""
+!!! question "¿Cuál es la longitud de cada lado en la iteración n?"
+"""
+
+# ╔═╡ bd4995ef-b2d4-42dc-b7c3-da23040588a0
+begin
+longitud(n) = 1/3^n
+sol2 = @bind solucion2 CheckBox()
+	md"**MOSTRAR SOLUCIÓN** $sol2"
+end
+
+# ╔═╡ 75570363-77f1-4541-9d3c-0fc4b0d094b5
+if solucion2
+	md"""
+	En cada iteración cada lado se descompone en $4$ lados, cada uno con longitud $1/3$ del lado inicial, de manera que si en la etapa $0$ el lado mide $1$, en la etapa $n$ la longitud de los lados es
+
+	$$\mbox{longitud}(n) = \frac{1}{3^n}$$
+	"""
+end
+
+# ╔═╡ 4068758a-7abe-4b97-87dc-178d999d49aa
+md"""
+!!! question "¿Cuál es el perímetro del copo en la iteración n?"
+"""
+
+# ╔═╡ 6f02e77a-e3fa-4239-a136-6da8ca3d76b6
+begin
+sol3 = @bind solucion3 CheckBox()
+md"**MOSTRAR SOLUCIÓN** $sol3"
+end
+
+# ╔═╡ 3a9605c1-3ecc-451e-98ac-5434e5ddb5ee
+if solucion3
+	md"""
+	$$\mbox{perímetro}(n) = \mbox{lados}(n)\times \mbox{longitud}(n) = 3\times \left(\frac{4}{3}\right)^n$$
+
+	Iteración $iteracion
+
+	| Iteración | Lados | Longitud Lado | Perímetro |
+	|:---------:|:-----:|:--:|:--:|
+	| **$(n)** | **$(lados(n))** | **$(longitud(n))** | **$(lados(n) * longitud(n))** |
+	"""
+end
+
+# ╔═╡ a4faeccd-bffd-41ee-8cd4-a2465d7f190e
+md"""
+!!! question "¿Hacia dónde tiende el perímetro del fractal a medida que crece el número de iteraciones?"
+"""
+
+# ╔═╡ fa9ab1be-8fce-4be7-a6f5-2d06b59fdebd
+begin
+sol4 = @bind solucion4 CheckBox()
+md"**MOSTRAR SOLUCIÓN** $sol4"
+end
+
+# ╔═╡ c112c220-d90c-42d3-b109-5d3571167116
+if solucion4
+	@syms x
+	l = limit(lados(x) * longitud(x), x => oo)
 	
-	$$2r\operatorname{sen}\left(\frac{\pi}{n}\right)$$.
+	md"""
+	Límite del perímetro: $\lim_{n\to \infty} 3 \times \left(\frac{4}{3}\right)^n=$ $(l)
+
+	!!! info "Así que el fractal del copo de nieve tiene un perímetro infinito."
 	"""
 end
 
 # ╔═╡ d6e22d21-171a-4002-b5f7-b6bf9413efa0
 md"""
-## Cálculo del área de los polígonos inscritos
+## Cálculo del área del fractal
 """
 
-# ╔═╡ add499af-fd3e-43e2-94fb-28e5ebd30107
+# ╔═╡ 30e3d720-d067-4f20-b046-596a36968b1f
 md"""
-!!! question "¿Cuál es el área de cada uno de estos triángulos?"
+!!! question "¿Cuál es el área de cada nuevo triángulo que se genera en la iteración n?"
 """
 
-# ╔═╡ c2dc61df-173e-4c95-8875-35b324a1fb24
+# ╔═╡ 8b9055d3-6f9a-44cd-9cd9-c105628323a6
 begin
-sol2 = @bind solucion2 CheckBox()
-	md"**MOSTRAR SOLUCIÓN** $sol2"
+sol5 = @bind solucion5 CheckBox()
+md"**MOSTRAR SOLUCIÓN** $sol5"
 end
 
-# ╔═╡ 7d16979a-d188-450b-b952-2595c02d39e8
-if solucion2
+# ╔═╡ 1169f628-01d6-4be7-b724-695335242fab
+if solucion5
 	md"""
-	El área es 
-	
-	$$\frac{1}{2}2r\operatorname{sen}\left(\frac{\pi}{n}\right)r\cos\left(\frac{\pi}{n}\right) = \frac{1}{2}r^2\operatorname{sen}\left(\frac{2\pi}{n}\right).$$
+	| Iteración | Longitud lados | Area nuevos triángulos
+	|:---------:|:-----:|:--:|
+	| $0$ | $1$ | $\frac{\sqrt{3}}{4} 1^2 = \frac{\sqrt{3}}{4}$|
+	| $1$ | $\frac{1}{3}$ | $\frac{\sqrt{3}}{4} \left(\frac{1}{3}\right)^2= \frac{\sqrt{3}}{4} \frac{1}{9}$ |
+	| $2$ | $\frac{1}{3^2}$ | $\frac{\sqrt{3}}{4} \left(\frac{1}{3^2}\right)^2 = \frac{\sqrt{3}}{4} \left(\frac{1}{9}\right)^2$ |
+	| $3$ | $\frac{1}{3^3}$ | $\frac{\sqrt{3}}{4} \left(\frac{1}{3^3}\right)^2 = \frac{\sqrt{3}}{4} \left(\frac{1}{9}\right)^3$ |
+	| $4$ | $\frac{1}{3^4}$ | $\frac{\sqrt{3}}{4} \left(\frac{1}{3^4}\right)^2 = \frac{\sqrt{3}}{4} \left(\frac{1}{9}\right)^4$ |
+	| $\vdots$ | $\vdots$ | $\vdots$ |
+	| $n$ | $\frac{1}{3^n}$ | $\frac{\sqrt{3}}{4} \left(\frac{1}{3^n}\right)^2 = \frac{\sqrt{3}}{4} \left(\frac{1}{9}\right)^n$ |
 	"""
 end
 
-# ╔═╡ 075def84-f8fb-4bd0-a431-8911a3ae1119
-md"""
-## Aproximación del perímetro y del área de la circunferencia
-
-Usando las fórmulas anteriores podemos definir una función en Julia para calcular el el perímetro y otra para el área de un polígono regular de $n$ lados. Para simplificar, tomaremos un círculo de radio $r=1$.
-"""
-
-# ╔═╡ 4dcaef0c-b003-4ef3-afb3-7d1b3220e747
-p(n) = 2n * sin(PI/n)
-
-# ╔═╡ cf8c210a-5cc1-43fb-8557-9f0ed61535dd
-a(n) = n * sin(2*PI/n) / 2
-
-# ╔═╡ b8e6acb3-b3b0-4f1d-af2e-f21787c3b17f
-begin
-lados = @bind n Slider(3:1000, show_value=true)
-md"""Número de lados $lados"""
-end
-
-# ╔═╡ f9af3965-b7dc-4cd2-8665-18bb0953ce4d
-md"""
-| Perímetro | Área |
-|:---------:|:-----:|
-|**$(float(p(n)))**|**$(float(a(n)))**|
-"""
-
 # ╔═╡ 9781c76f-8125-43a5-b26c-4f0867e51e41
 md"""
-!!! question "¿Hacia qué valor tiende el perímetro? ¿Y el área?"
+!!! question "¿Cuál es el área del fractal en la etapa n?"
 """
 
-# ╔═╡ 4e0cedb1-3f37-41a1-98a0-207a79277380
-md"""
-## Cálculo del límite
-
-Parece evidente que el perímetro de la circunferencia aparecerá en el límite cuando el número de lados tiende a infinito del perímetro del polígono de $n$ lados. Y lo mismo ocurre con el área.
-
-En Julia podemos calcular límites con la función `limit` del paquete `SymPy`.
-"""
-
-# ╔═╡ 37d2724f-eade-4cf2-9e9c-9c87f42ee5fb
+# ╔═╡ e4229f01-231b-49ee-8199-4c8fec8f5bd0
 begin
-@syms x
-perimetro = limit(p(x), x=>oo)
-area = limit(a(x), x=>oo)
-md"""
-Límite del perímetro: 
-``\lim_{n\to\infty} n\operatorname{sen}\left(\frac{\pi}{n}\right) =`` $perimetro
+sol6 = @bind solucion6 CheckBox()
+md"**MOSTRAR SOLUCIÓN** $sol6"
+end
 
-Límite del área: 
-``\lim_{n\to\infty} \frac{1}{2}n\operatorname{sen}\left(\frac{2\pi}{n}\right) =`` $area
+# ╔═╡ 6bb3b1f0-e27c-44bc-912e-cb50ebcc0e08
+if solucion6
+	area(n) = sum([lados(n) * sqrt(3)/4 * longitud(n+1)^2 for i = 1:n])
+	
+	md"""
+	| Iteración | Número nuevos triángulos | Area nuevos triángulos | Area total nueva |
+	|:--:|:--:|:--:|:--:|
+	| $0$ | $1$ | $\frac{\sqrt{3}}{4}$ | $\frac{\sqrt{3}}{4}$ |
+	| $1$ | $3$ | $\frac{\sqrt{3}}{4} \frac{1}{9}$ | $3\times \frac{\sqrt{3}}{4} \frac{1}{9} = \frac{\sqrt{3}}{4}\frac{3}{4}\frac{4}{9}$ |
+	| $2$ | $3\times 4$ | $\frac{\sqrt{3}}{4} \left(\frac{1}{9}\right)^2$ | $3\times 4 \times \frac{\sqrt{3}}{4} \left(\frac{1}{9}\right)^2 = \frac{\sqrt{3}}{4}\frac{3}{4}\left(\frac{4}{9}\right)^2$ |
+	| $3$ | $3\times 4^2$ | $\frac{\sqrt{3}}{4} \left(\frac{1}{9}\right)^3$ | $3\times 4^2 \times \frac{\sqrt{3}}{4} \left(\frac{1}{9}\right)^3 = \frac{\sqrt{3}}{4}\frac{3}{4}\left(\frac{4}{9}\right)^3$ |
+	| $4$ | $3\times 4^3$ | $\frac{\sqrt{3}}{4} \left(\frac{1}{9}\right)^4$ | $3\times 4^3 \times \frac{\sqrt{3}}{4} \left(\frac{1}{9}\right)^4 = \frac{\sqrt{3}}{4}\frac{3}{4}\left(\frac{4}{9}\right)^4$ |
+	| $\vdots$ | $\vdots$ | $\vdots$ | $\vdots$ |
+	| $n$ | $3\times 4^n$ | $\frac{\sqrt{3}}{4} \left(\frac{1}{9}\right)^n$ | $3\times 4^{n-1} \times \frac{\sqrt{3}}{4} \left(\frac{1}{9}\right)^n = \frac{\sqrt{3}}{4}\frac{3}{4}\left(\frac{4}{9}\right)^n$ |
+
+	Así pues, la suma de las áreas en la iteración $n$ es
+
+	$$\begin{aligned}
+	\mbox{Area}(n) &= \frac{\sqrt{3}}{4} + \sum_{i=1}^n \frac{\sqrt{3}}{4}\frac{3}{4}\left(\frac{4}{9}\right)^i = \frac{\sqrt{3}}{4} + \frac{3\sqrt{3}}{16}\sum_{i=1}^n \left(\frac{4}{9}\right)^i\\ &= \frac{\sqrt{3}}{4} + \frac{3\sqrt{3}}{16}\left(\sum_{i=0}^n \left(\frac{4}{9}\right)^i - 1\right) = \frac{\sqrt{3}}{16} + \frac{3\sqrt{3}}{16}\sum_{i=0}^n \left(\frac{4}{9}\right)^i
+	\end{aligned}$$
+	"""
+end
+
+# ╔═╡ 40a8d7a0-c950-43f2-8162-60bb4251b58d
+md"""
+!!! question "¿Cuánto vale esta suma?"
 """
+
+# ╔═╡ 2410f6aa-95d2-4c5f-93c0-87d639c3d48e
+begin
+sol7 = @bind solucion7 CheckBox()
+md"**MOSTRAR SOLUCIÓN** $sol7"
+end
+
+# ╔═╡ 39db7f0c-1b82-45ec-a448-1030289ba036
+if solucion7
+	md"""
+	$$\begin{aligned}
+	A(n) &= \frac{\sqrt{3}}{16} + \frac{3\sqrt{3}}{16}\sum_{i=0}^n \left(\frac{4}{9}\right)^i = \frac{\sqrt{3}}{16} + \frac{3\sqrt{3}}{16}\frac{1-\left(\frac{4}{9}\right)^{n+1}}{1-\frac{4}{9}}\\ &= \frac{\sqrt{3}}{16} + \frac{3\sqrt{3}}{16}\frac{9}{5}\left(1-\left(\frac{4}{9}\right)^{n+1}\right)
+	\end{aligned}$$
+	"""
+end
+
+# ╔═╡ 09f4cd5e-10fe-4ae2-8c04-4ae7a7e9a953
+md"""
+!!! question "¿Hacia dónde tiende el área del fractal a medida que aumenta el número de iteraciones?"
+"""
+
+# ╔═╡ e10a73d5-1eb1-459c-a1d6-e1240cf74207
+begin
+sol8 = @bind solucion8 CheckBox()
+md"**MOSTRAR SOLUCIÓN** $sol8"
+end
+
+# ╔═╡ c534ac7f-5c8a-4685-8257-960adf6c311b
+if solucion8
+	md"""
+	$$\begin{aligned}
+	\mbox{Area} &= \frac{\sqrt{3}}{16} + \frac{3\sqrt{3}}{16}\sum_{i=0}^\infty \left(\frac{4}{9}\right)^i \\ 
+	&= \lim_{n\to\infty} \frac{\sqrt{3}}{16} + \frac{3\sqrt{3}}{16}\frac{9}{5}\left(1-\left(\frac{4}{9}\right)^{n+1}\right) \\
+	&=  \frac{\sqrt{3}}{16} + \frac{3\sqrt{3}}{16}\frac{9}{5} =  \frac{\sqrt{3}}{4}\frac{8}{5}
+	\end{aligned}$$
+	"""
 end
 
 # ╔═╡ 43220735-9069-4ac1-94a6-2faf42f80aaa
 md"""
 !!! warning "!Enhorabuena!"
 
-	Ahora ya sabes cómo los antiguos griegos fueron capaces de obtener una buena aproximación del número $\pi$ usando este ingenioso método.
+	Ahora ya sabes como cálcular el perímetro y el área del fractal del copo de nieve y has descubierto que un fractal puede tener perímetro infinito mientras que su área es finita.
 """
 
 # ╔═╡ 1243aac7-ba90-4c8d-8c61-77bc8e4b6b8b
 pista(texto) = Markdown.MD(Markdown.Admonition("hint", "Pista", [texto]));
 
 # ╔═╡ 98b1b285-405c-4e56-a2d2-3d420e7d99b1
-pista(md"""Dividiendo el ángulo $\alpha$ por la mitad se obtienen triángulos rectángulos cuyo cateto opuesto es la mitad de la base del triángulo original.""")
+pista(md"""En cada iteración cada lado se descompone en 4 nuevos lados.""")
 
-# ╔═╡ 6ffee859-06dc-45b2-b972-14ed6e6a09ea
-pista(md"""Dividiendo el ángulo $\alpha$ por la mitad se obtienen triángulos rectángulos cuyo cateto contiguo es la altura del triángulo original.""")
+# ╔═╡ 058caefb-ce8c-47f2-b9fa-a0c1ec7d0266
+pista(md"""La tendencia del perímetro se obtiene con el límite del perímetro cuando el número de tieraciones tiende a finde la infinito.
+""")
+
+# ╔═╡ 9b6479a2-d73b-425a-bfad-3a957bcf95cf
+pista(md"""En cada iteración se generan triángulos equiláteros de lado un tercio del lado original.
+
+Recuerda que el área de un triángulo equilatero de lado $l$ es $\frac{\sqrt{3}}{4}l$.
+"""
+)
+
+# ╔═╡ 62fcf9bb-b417-4141-9665-68cf142c6494
+pista(md"""En cada iteración se generan tantos triángulos como lados tenga el copo y sus áreas se van añadiendo al área del copo anterior.
+""")
+
+# ╔═╡ 629253cc-5026-4575-9498-87dc6fc73634
+pista(md"""Se trata de una serie geométrica de razón $r=\frac{4}{9}$
+
+Recuerda que $\sum_{i=0}^n r^n = \frac{1-r^{n+1}}{1-r}$
+""")
+
+# ╔═╡ 7d0e35aa-7e89-4a09-be98-f835c4d55cf2
+pista(md"""La tendencia del área se obtiene con el límite del área cuando el número de tieraciones tiende a finde la infinito.
+""")
 
 # ╔═╡ fb49178f-9211-4962-a11a-cd5b419e56f5
 correcto(text) = Markdown.MD(Markdown.Admonition("correct", "¡Correcto!", [text]));
 
 # ╔═╡ 283ac4c6-3c73-4db8-8a1d-38d11246adfa
 begin
-	function dibuja_polígono(n, r = 1)
-	    """
-	    Función que dibuja un polígono regular de n lados inscrito en un círculo de radio r.
-	
-	    Dependencias:
-	    - Base.Iterators
-	    """
-	    # Calculamos los ángulos de la descomposición en triángulos
-	    θs = 2 * π * (0:n) / n
-	    # Calculamos las coordenadas de los vértices
-	    xs = r * cos.(θs)
-	    ys = r * sin.(θs)
-	    # Anadimos el origen a los vectores de coordenadas de los vértices.
-	    x2s = collect(flatten([(i,0) for i = xs]))
-	    y2s = collect(flatten([(i,0) for i = ys]))
-	    # Dibujamos el círculo
-	    t = 0:0.01:2π
-	    plot(r * cos.(t), r * sin.(t), linewidth = 2, aspect_ratio=:equal, legend=:none)
-	    # Dibujamos el polígono
-	    plot!(xs, ys)
-	    # Dibujamos la descomposición del polígono en triángulos
-	    return plot!(x2s, y2s, color=:gray)
-	end
-	nothing
+function puntos_copo(p::Complex, q::Complex, n::Int)
+"""
+Función que calcula los puntos de los vértices del copo de nieve entre los puntos p y q en la iteración n.
+
+Require: Plots
+"""
+    if n == 0
+        return [p, q]
+    else
+        # Calculamos los puntos que dividen el segmento de p a q en tres partes iguales.
+        r = p + (q - p) / 3
+        s = p + 2*(q - p) / 3
+        # Calculamos el punto del triángulo equilátero central.
+        t = r + (s - r) * exp(im * -π / 3)
+        
+        # Calculamos los puntos de los cuatro segmentos resultantes recursivamente.
+        seg1 = puntos_copo(p, r, n - 1)
+        seg2 = puntos_copo(r, t, n - 1)
+        seg3 = puntos_copo(t, s, n - 1)
+        seg4 = puntos_copo(s, q, n - 1)
+        
+        # Combinamos los puntos de los cuatro segmentos evitando duplicidades en las uniones.
+        return vcat(seg1, seg2[2:end], seg3[2:end], seg4[2:end])
+    end
+end
+
+function dibuja_copo(n::Int = 1)
+	"""
+	Función que dibuja un copo de nieve hasta la iteración n.
+	"""
+	# Definimos los vértices del triángulo inicial.
+    A = 0 + 0im
+    B = 1 + 0im
+    C = 0.5 + (sqrt(3)/2)*im
+
+    seg1 = puntos_copo(A, B, n)
+    seg2 = puntos_copo(B, C, n)
+    seg3 = puntos_copo(C, A, n)
+    
+    # Combinamos los puntos de los segmentos del triángulo.
+    points = vcat(seg1, seg2[2:end], seg3[2:end])
+
+	plot(real.(points), imag.(points),
+     aspect_ratio = 1, 
+     legend = false,
+     title = "Fractal del copo de nieve (iteración n = $n)")
+end
+nothing
 end
 
 # ╔═╡ ac63dbf4-85c9-49d1-9c01-b9778eb5765f
-dibuja_polígono(n)
+dibuja_copo(n)
+
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
+LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
+Latexify = "23fbe1c1-3f47-55db-b15f-69d7ec21a316"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 SymPy = "24249f21-da20-56a4-8eb1-6a02cf4ae2e6"
 
 [compat]
+LaTeXStrings = "~1.4.0"
+Latexify = "~0.16.6"
 Plots = "~1.40.8"
 PlutoUI = "~0.7.60"
 SymPy = "~2.2.0"
@@ -230,13 +392,19 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.11.3"
 manifest_format = "2.0"
-project_hash = "910db88825a08adb247ff96793ce7159bbe267ea"
+project_hash = "617b873aafd06ef8f047c203d2e2863fc5d7fbe7"
 
 [[deps.AbstractPlutoDingetjes]]
 deps = ["Pkg"]
 git-tree-sha1 = "6e1d2a35f2f90a4bc7c2ed98079b2ba09c35b83a"
 uuid = "6e696c72-6542-2067-7265-42206c756150"
 version = "1.3.2"
+
+[[deps.AliasTables]]
+deps = ["PtrArrays", "Random"]
+git-tree-sha1 = "9876e1e164b144ca45e9e3198d0b689cadfed9ff"
+uuid = "66dad0bd-aa9a-41b7-9441-69ab47430ed8"
+version = "1.1.3"
 
 [[deps.ArgTools]]
 uuid = "0dad84c5-d112-42e6-8d28-ef12dabb789f"
@@ -256,10 +424,10 @@ uuid = "d1d4a3ce-64b1-5f1a-9ba4-7e7e69966f35"
 version = "0.1.9"
 
 [[deps.Bzip2_jll]]
-deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
-git-tree-sha1 = "8873e196c2eb87962a2048b3b8e08946535864a1"
+deps = ["Artifacts", "JLLWrappers", "Libdl"]
+git-tree-sha1 = "1b96ea4a01afe0ea4090c5c8039690672dd13f2e"
 uuid = "6e34b625-4abd-537c-b88f-471c36dfa7a0"
-version = "1.0.8+4"
+version = "1.0.9+0"
 
 [[deps.Cairo_jll]]
 deps = ["Artifacts", "Bzip2_jll", "CompilerSupportLibraries_jll", "Fontconfig_jll", "FreeType2_jll", "Glib_jll", "JLLWrappers", "LZO_jll", "Libdl", "Pixman_jll", "Xorg_libXext_jll", "Xorg_libXrender_jll", "Zlib_jll", "libpng_jll"]
@@ -269,15 +437,15 @@ version = "1.18.2+1"
 
 [[deps.CodecZlib]]
 deps = ["TranscodingStreams", "Zlib_jll"]
-git-tree-sha1 = "bce6804e5e6044c6daab27bb533d1295e4a2e759"
+git-tree-sha1 = "962834c22b66e32aa10f7611c08c8ca4e20749a9"
 uuid = "944b1d66-785c-5afd-91f1-9de20f533193"
-version = "0.7.6"
+version = "0.7.8"
 
 [[deps.ColorSchemes]]
 deps = ["ColorTypes", "ColorVectorSpace", "Colors", "FixedPointNumbers", "PrecompileTools", "Random"]
-git-tree-sha1 = "c785dfb1b3bfddd1da557e861b919819b82bbe5b"
+git-tree-sha1 = "b5278586822443594ff615963b0c09755771b3e0"
 uuid = "35d6a980-a343-548e-a6ea-1d62b119f2f4"
-version = "3.27.1"
+version = "3.26.0"
 
 [[deps.ColorTypes]]
 deps = ["FixedPointNumbers", "Random"]
@@ -286,14 +454,10 @@ uuid = "3da002f7-5984-5a60-b8a6-cbb66c0b333f"
 version = "0.11.5"
 
 [[deps.ColorVectorSpace]]
-deps = ["ColorTypes", "FixedPointNumbers", "LinearAlgebra", "Requires", "Statistics", "TensorCore"]
-git-tree-sha1 = "a1f44953f2382ebb937d60dafbe2deea4bd23249"
+deps = ["ColorTypes", "FixedPointNumbers", "LinearAlgebra", "SpecialFunctions", "Statistics", "TensorCore"]
+git-tree-sha1 = "600cc5508d66b78aae350f7accdb58763ac18589"
 uuid = "c3611d14-8923-5661-9e6a-0046d554d3a4"
-version = "0.10.0"
-weakdeps = ["SpecialFunctions"]
-
-    [deps.ColorVectorSpace.extensions]
-    SpecialFunctionsExt = "SpecialFunctions"
+version = "0.9.10"
 
 [[deps.Colors]]
 deps = ["ColorTypes", "FixedPointNumbers", "Reexport"]
@@ -328,9 +492,9 @@ version = "1.1.1+0"
 
 [[deps.ConcurrentUtilities]]
 deps = ["Serialization", "Sockets"]
-git-tree-sha1 = "ea32b83ca4fefa1768dc84e504cc0a94fb1ab8d1"
+git-tree-sha1 = "d9d26935a0bcffc87d2613ce14c527c99fc543fd"
 uuid = "f0e56b4a-5159-44fe-b623-3e5288b988bb"
-version = "2.4.2"
+version = "2.5.0"
 
 [[deps.Conda]]
 deps = ["Downloads", "JSON", "VersionParsing"]
@@ -384,9 +548,9 @@ version = "1.6.0"
 
 [[deps.EpollShim_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
-git-tree-sha1 = "8e9441ee83492030ace98f9789a654a6d0b1f643"
+git-tree-sha1 = "8a4be429317c42cfae6a7fc03c31bad1970c310d"
 uuid = "2702e6a9-849d-5ed8-8c21-79e8b8f9ee43"
-version = "0.0.20230411+0"
+version = "0.0.20230411+1"
 
 [[deps.ExceptionUnwrapping]]
 deps = ["Test"]
@@ -396,9 +560,9 @@ version = "0.1.11"
 
 [[deps.Expat_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
-git-tree-sha1 = "cc5231d52eb1771251fbd37171dbc408bcc8a1b6"
+git-tree-sha1 = "d55dffd9ae73ff72f1c0482454dcf2ec6c6c4a63"
 uuid = "2e619515-83b5-522b-bb60-26c02a35a201"
-version = "2.6.4+0"
+version = "2.6.5+0"
 
 [[deps.FFMPEG]]
 deps = ["FFMPEG_jll"]
@@ -424,9 +588,9 @@ version = "0.8.5"
 
 [[deps.Fontconfig_jll]]
 deps = ["Artifacts", "Bzip2_jll", "Expat_jll", "FreeType2_jll", "JLLWrappers", "Libdl", "Libuuid_jll", "Zlib_jll"]
-git-tree-sha1 = "db16beca600632c95fc8aca29890d83788dd8b23"
+git-tree-sha1 = "21fac3c77d7b5a9fc03b0ec503aa1a6392c34d2b"
 uuid = "a3f928ae-7b40-5064-980b-68af3947d34b"
-version = "2.13.96+0"
+version = "2.15.0+0"
 
 [[deps.Format]]
 git-tree-sha1 = "9c68794ef81b08086aeb32eeaf33531668d5f5fc"
@@ -441,27 +605,27 @@ version = "2.13.3+1"
 
 [[deps.FriBidi_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
-git-tree-sha1 = "1ed150b39aebcc805c26b93a8d0122c940f64ce2"
+git-tree-sha1 = "846f7026a9decf3679419122b49f8a1fdb48d2d5"
 uuid = "559328eb-81f9-559d-9380-de523a88c83c"
-version = "1.0.14+0"
+version = "1.0.16+0"
 
 [[deps.GLFW_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Libglvnd_jll", "Xorg_libXcursor_jll", "Xorg_libXi_jll", "Xorg_libXinerama_jll", "Xorg_libXrandr_jll", "libdecor_jll", "xkbcommon_jll"]
-git-tree-sha1 = "532f9126ad901533af1d4f5c198867227a7bb077"
+git-tree-sha1 = "fcb0584ff34e25155876418979d4c8971243bb89"
 uuid = "0656b61e-2033-5cc2-a64a-77c0f6c09b89"
-version = "3.4.0+1"
+version = "3.4.0+2"
 
 [[deps.GR]]
 deps = ["Artifacts", "Base64", "DelimitedFiles", "Downloads", "GR_jll", "HTTP", "JSON", "Libdl", "LinearAlgebra", "Preferences", "Printf", "Qt6Wayland_jll", "Random", "Serialization", "Sockets", "TOML", "Tar", "Test", "p7zip_jll"]
-git-tree-sha1 = "ee28ddcd5517d54e417182fec3886e7412d3926f"
+git-tree-sha1 = "0ff136326605f8e06e9bcf085a356ab312eef18a"
 uuid = "28b8d3ca-fb5f-59d9-8090-bfdbd6d07a71"
-version = "0.73.8"
+version = "0.73.13"
 
 [[deps.GR_jll]]
 deps = ["Artifacts", "Bzip2_jll", "Cairo_jll", "FFMPEG_jll", "Fontconfig_jll", "FreeType2_jll", "GLFW_jll", "JLLWrappers", "JpegTurbo_jll", "Libdl", "Libtiff_jll", "Pixman_jll", "Qt6Base_jll", "Zlib_jll", "libpng_jll"]
-git-tree-sha1 = "f31929b9e67066bee48eec8b03c0df47d31a74b3"
+git-tree-sha1 = "9cb62849057df859575fc1dda1e91b82f8609709"
 uuid = "d2c73de3-f751-5644-a686-071e5b155ba9"
-version = "0.73.8+0"
+version = "0.73.13+0"
 
 [[deps.Gettext_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "JLLWrappers", "Libdl", "Libiconv_jll", "Pkg", "XML2_jll"]
@@ -471,9 +635,9 @@ version = "0.21.0+0"
 
 [[deps.Glib_jll]]
 deps = ["Artifacts", "Gettext_jll", "JLLWrappers", "Libdl", "Libffi_jll", "Libiconv_jll", "Libmount_jll", "PCRE2_jll", "Zlib_jll"]
-git-tree-sha1 = "b36c7e110080ae48fdef61b0c31e6b17ada23b33"
+git-tree-sha1 = "b0036b392358c80d2d2124746c2bf3d48d457938"
 uuid = "7746bdde-850d-59dc-9ae8-88ece973131d"
-version = "2.82.2+0"
+version = "2.82.4+0"
 
 [[deps.Graphite2_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -488,15 +652,15 @@ version = "1.0.2"
 
 [[deps.HTTP]]
 deps = ["Base64", "CodecZlib", "ConcurrentUtilities", "Dates", "ExceptionUnwrapping", "Logging", "LoggingExtras", "MbedTLS", "NetworkOptions", "OpenSSL", "PrecompileTools", "Random", "SimpleBufferStream", "Sockets", "URIs", "UUIDs"]
-git-tree-sha1 = "ae350b8225575cc3ea385d4131c81594f86dfe4f"
+git-tree-sha1 = "c67b33b085f6e2faf8bf79a61962e7339a81129c"
 uuid = "cd3eb016-35fb-5094-929b-558a96fad6f3"
-version = "1.10.12"
+version = "1.10.15"
 
 [[deps.HarfBuzz_jll]]
 deps = ["Artifacts", "Cairo_jll", "Fontconfig_jll", "FreeType2_jll", "Glib_jll", "Graphite2_jll", "JLLWrappers", "Libdl", "Libffi_jll"]
-git-tree-sha1 = "401e4f3f30f43af2c8478fc008da50096ea5240f"
+git-tree-sha1 = "55c53be97790242c29031e5cd45e8ac296dadda3"
 uuid = "2e76f6c2-a576-52d4-95c1-20adfe4de566"
-version = "8.3.1+0"
+version = "8.5.0+0"
 
 [[deps.Hyperscript]]
 deps = ["Test"]
@@ -522,9 +686,9 @@ uuid = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
 version = "1.11.0"
 
 [[deps.IrrationalConstants]]
-git-tree-sha1 = "630b497eafcc20001bba38a4651b327dcfc491d2"
+git-tree-sha1 = "e2222959fbc6c19554dc15174c81bf7bf3aa691c"
 uuid = "92d709cd-6900-40b7-9082-c6be49f344b6"
-version = "0.2.2"
+version = "0.2.4"
 
 [[deps.JLFzf]]
 deps = ["Pipe", "REPL", "Random", "fzf_jll"]
@@ -534,9 +698,9 @@ version = "0.1.9"
 
 [[deps.JLLWrappers]]
 deps = ["Artifacts", "Preferences"]
-git-tree-sha1 = "be3dc50a92e5a386872a493a10050136d4703f9b"
+git-tree-sha1 = "a007feb38b422fbdab534406aeca1b86823cb4d6"
 uuid = "692b3bcd-3c85-4b1f-b108-f13ce0eb3210"
-version = "1.6.1"
+version = "1.7.0"
 
 [[deps.JSON]]
 deps = ["Dates", "Mmap", "Parsers", "Unicode"]
@@ -546,9 +710,9 @@ version = "0.21.4"
 
 [[deps.JpegTurbo_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
-git-tree-sha1 = "25ee0be4d43d0269027024d75a24c24d6c6e590c"
+git-tree-sha1 = "eac1206917768cb54957c65a615460d87b455fc1"
 uuid = "aacddb02-875f-59d6-b918-886e6ef4fbf8"
-version = "3.0.4+0"
+version = "3.1.1+0"
 
 [[deps.LAME_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
@@ -558,9 +722,9 @@ version = "3.100.2+0"
 
 [[deps.LERC_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
-git-tree-sha1 = "36bdbc52f13a7d1dcb0f3cd694e01677a515655b"
+git-tree-sha1 = "aaafe88dccbd957a8d82f7d05be9b69172e0cee3"
 uuid = "88015f11-f218-50d7-93a8-a6af411a945d"
-version = "4.0.0+0"
+version = "4.0.1+0"
 
 [[deps.LLVMOpenMP_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
@@ -570,9 +734,9 @@ version = "18.1.7+0"
 
 [[deps.LZO_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
-git-tree-sha1 = "854a9c268c43b77b0a27f22d7fab8d33cdb3a731"
+git-tree-sha1 = "1c602b1127f4751facb671441ca72715cc95938a"
 uuid = "dd4b983a-f0e5-5f8d-a1b7-129d4a5fb1ac"
-version = "2.10.2+3"
+version = "2.10.3+0"
 
 [[deps.LaTeXStrings]]
 git-tree-sha1 = "dda21b8cbd6a6c40d9d02a73230f9d70fed6918c"
@@ -581,9 +745,9 @@ version = "1.4.0"
 
 [[deps.Latexify]]
 deps = ["Format", "InteractiveUtils", "LaTeXStrings", "MacroTools", "Markdown", "OrderedCollections", "Requires"]
-git-tree-sha1 = "ce5f5621cac23a86011836badfedf664a612cee4"
+git-tree-sha1 = "cd714447457c660382fe634710fb56eb255ee42e"
 uuid = "23fbe1c1-3f47-55db-b15f-69d7ec21a316"
-version = "0.16.5"
+version = "0.16.6"
 
     [deps.Latexify.extensions]
     DataFramesExt = "DataFrames"
@@ -626,9 +790,9 @@ version = "1.11.0"
 
 [[deps.Libffi_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
-git-tree-sha1 = "0b4a5d71f3e5200a7dff793393e09dfc2d874290"
+git-tree-sha1 = "27ecae93dd25ee0909666e6835051dd684cc035e"
 uuid = "e9f186c6-92d2-5b65-8a66-fee21dc1b490"
-version = "3.2.2+1"
+version = "3.2.2+2"
 
 [[deps.Libgcrypt_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Libgpg_error_jll"]
@@ -644,33 +808,33 @@ version = "1.7.0+0"
 
 [[deps.Libgpg_error_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
-git-tree-sha1 = "c6ce1e19f3aec9b59186bdf06cdf3c4fc5f5f3e6"
+git-tree-sha1 = "df37206100d39f79b3376afb6b9cee4970041c61"
 uuid = "7add5ba3-2f88-524e-9cd5-f83b8a55f7b8"
-version = "1.50.0+0"
+version = "1.51.1+0"
 
 [[deps.Libiconv_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
-git-tree-sha1 = "61dfdba58e585066d8bce214c5a51eaa0539f269"
+git-tree-sha1 = "be484f5c92fad0bd8acfef35fe017900b0b73809"
 uuid = "94ce4f54-9a6c-5748-9c1c-f9c7231a4531"
-version = "1.17.0+1"
+version = "1.18.0+0"
 
 [[deps.Libmount_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
-git-tree-sha1 = "84eef7acd508ee5b3e956a2ae51b05024181dee0"
+git-tree-sha1 = "89211ea35d9df5831fca5d33552c02bd33878419"
 uuid = "4b2f31a3-9ecc-558c-b454-b3730dcb73e9"
-version = "2.40.2+2"
+version = "2.40.3+0"
 
 [[deps.Libtiff_jll]]
 deps = ["Artifacts", "JLLWrappers", "JpegTurbo_jll", "LERC_jll", "Libdl", "XZ_jll", "Zlib_jll", "Zstd_jll"]
-git-tree-sha1 = "b404131d06f7886402758c9ce2214b636eb4d54a"
+git-tree-sha1 = "4ab7581296671007fc33f07a721631b8855f4b1d"
 uuid = "89763e89-9b03-5906-acba-b20f662cd828"
-version = "4.7.0+0"
+version = "4.7.1+0"
 
 [[deps.Libuuid_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
-git-tree-sha1 = "edbf5309f9ddf1cab25afc344b1e8150b7c832f9"
+git-tree-sha1 = "e888ad02ce716b319e6bdb985d2ef300e7089889"
 uuid = "38a345b3-de98-5d2b-a5d3-14cd9215e700"
-version = "2.40.2+2"
+version = "2.40.3+0"
 
 [[deps.LinearAlgebra]]
 deps = ["Libdl", "OpenBLAS_jll", "libblastrampoline_jll"]
@@ -679,9 +843,9 @@ version = "1.11.0"
 
 [[deps.LogExpFunctions]]
 deps = ["DocStringExtensions", "IrrationalConstants", "LinearAlgebra"]
-git-tree-sha1 = "a2d09619db4e765091ee5c6ffe8872849de0feea"
+git-tree-sha1 = "13ca9e2586b89836fd20cccf56e57e2b9ae7f38f"
 uuid = "2ab3a3ac-af41-5b50-aa03-7779005ae688"
-version = "0.3.28"
+version = "0.3.29"
 
     [deps.LogExpFunctions.extensions]
     LogExpFunctionsChainRulesCoreExt = "ChainRulesCore"
@@ -709,10 +873,9 @@ uuid = "6c6e2e6c-3030-632d-7369-2d6c69616d65"
 version = "0.1.4"
 
 [[deps.MacroTools]]
-deps = ["Markdown", "Random"]
-git-tree-sha1 = "2fa9ee3e63fd3a4f7a9a4f4744a52f4856de82df"
+git-tree-sha1 = "72aebe0b5051e5143a079a4685a46da330a40472"
 uuid = "1914dd2f-81c6-5fcd-8719-6d5c9610ff09"
-version = "0.5.13"
+version = "0.5.15"
 
 [[deps.Markdown]]
 deps = ["Base64"]
@@ -751,9 +914,9 @@ version = "2023.12.12"
 
 [[deps.NaNMath]]
 deps = ["OpenLibm_jll"]
-git-tree-sha1 = "0877504529a3e5c3343c6f8b4c0381e57e4387e4"
+git-tree-sha1 = "cc0a5deefdb12ab3a096f00a6d42133af4560d71"
 uuid = "77ba4419-2d1f-58cd-9bb1-8ffee604a2e3"
-version = "1.0.2"
+version = "1.1.2"
 
 [[deps.NetworkOptions]]
 uuid = "ca575930-c2e3-43a9-ace4-1e988b2c1908"
@@ -783,15 +946,15 @@ version = "1.4.3"
 
 [[deps.OpenSSL_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
-git-tree-sha1 = "7493f61f55a6cce7325f197443aa80d32554ba10"
+git-tree-sha1 = "a9697f1d06cc3eb3fb3ad49cc67f2cfabaac31ea"
 uuid = "458c3c95-2e84-50aa-8efc-19380b2a3a95"
-version = "3.0.15+3"
+version = "3.0.16+0"
 
 [[deps.OpenSpecFun_jll]]
-deps = ["Artifacts", "CompilerSupportLibraries_jll", "JLLWrappers", "Libdl", "Pkg"]
-git-tree-sha1 = "13652491f6856acfd2db29360e1bbcd4565d04f1"
+deps = ["Artifacts", "CompilerSupportLibraries_jll", "JLLWrappers", "Libdl"]
+git-tree-sha1 = "1346c9208249809840c91b26703912dff463d335"
 uuid = "efe28fd5-8261-553b-a9e1-b2916fc3738e"
-version = "0.5.5+0"
+version = "0.5.6+0"
 
 [[deps.Opus_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
@@ -800,9 +963,9 @@ uuid = "91d4177d-7536-5919-b921-800302f37372"
 version = "1.3.3+0"
 
 [[deps.OrderedCollections]]
-git-tree-sha1 = "dfdf5519f235516220579f949664f1bf44e741c5"
+git-tree-sha1 = "cc4054e898b852042d7b503313f7ad03de99c3dd"
 uuid = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
-version = "1.6.3"
+version = "1.8.0"
 
 [[deps.PCRE2_jll]]
 deps = ["Artifacts", "Libdl"]
@@ -811,9 +974,9 @@ version = "10.42.0+1"
 
 [[deps.Pango_jll]]
 deps = ["Artifacts", "Cairo_jll", "Fontconfig_jll", "FreeType2_jll", "FriBidi_jll", "Glib_jll", "HarfBuzz_jll", "JLLWrappers", "Libdl"]
-git-tree-sha1 = "e127b609fb9ecba6f201ba7ab753d5a605d53801"
+git-tree-sha1 = "3b31172c032a1def20c98dae3f2cdc9d10e3b561"
 uuid = "36c8627f-9965-5494-a995-c6b170f724f3"
-version = "1.54.1+0"
+version = "1.56.1+0"
 
 [[deps.Parsers]]
 deps = ["Dates", "PrecompileTools", "UUIDs"]
@@ -896,6 +1059,11 @@ deps = ["Unicode"]
 uuid = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 version = "1.11.0"
 
+[[deps.PtrArrays]]
+git-tree-sha1 = "1d36ef11a9aaf1e8b74dacc6a731dd1de8fd493d"
+uuid = "43287f4e-b6f4-7ad1-bb20-aadabca52c3d"
+version = "1.3.0"
+
 [[deps.PyCall]]
 deps = ["Conda", "Dates", "Libdl", "LinearAlgebra", "MacroTools", "Serialization", "VersionParsing"]
 git-tree-sha1 = "9816a3826b0ebf49ab4926e2b18842ad8b5c8f04"
@@ -961,9 +1129,9 @@ version = "1.0.1"
 
 [[deps.Requires]]
 deps = ["UUIDs"]
-git-tree-sha1 = "838a3a4188e2ded87a4f9f184b4b0d78a1e91cb7"
+git-tree-sha1 = "62389eeff14780bfe55195b7204c0d8738436d64"
 uuid = "ae029012-a4dd-5104-9daa-d747884805df"
-version = "1.3.0"
+version = "1.3.1"
 
 [[deps.SHA]]
 uuid = "ea8e919c-243c-51af-8825-aaa63cd721ce"
@@ -1007,9 +1175,9 @@ version = "1.11.0"
 
 [[deps.SpecialFunctions]]
 deps = ["IrrationalConstants", "LogExpFunctions", "OpenLibm_jll", "OpenSpecFun_jll"]
-git-tree-sha1 = "2f5d4697f21388cbe1ff299430dd169ef97d7e14"
+git-tree-sha1 = "64cca0c26b4f31ba18f13f6c12af7c85f478cfde"
 uuid = "276daf66-3868-5448-9aa4-cd146d93841b"
-version = "2.4.0"
+version = "2.5.0"
 
     [deps.SpecialFunctions.extensions]
     SpecialFunctionsChainRulesCoreExt = "ChainRulesCore"
@@ -1040,10 +1208,10 @@ uuid = "82ae8749-77ed-4fe6-ae5f-f523153014b0"
 version = "1.7.0"
 
 [[deps.StatsBase]]
-deps = ["DataAPI", "DataStructures", "LinearAlgebra", "LogExpFunctions", "Missings", "Printf", "Random", "SortingAlgorithms", "SparseArrays", "Statistics", "StatsAPI"]
-git-tree-sha1 = "5cf7606d6cef84b543b483848d4ae08ad9832b21"
+deps = ["AliasTables", "DataAPI", "DataStructures", "LinearAlgebra", "LogExpFunctions", "Missings", "Printf", "Random", "SortingAlgorithms", "SparseArrays", "Statistics", "StatsAPI"]
+git-tree-sha1 = "29321314c920c26684834965ec2ce0dacc9cf8e5"
 uuid = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
-version = "0.34.3"
+version = "0.34.4"
 
 [[deps.StyledStrings]]
 uuid = "f489334b-da3d-4c2e-b8f0-e476e12c162b"
@@ -1061,16 +1229,16 @@ uuid = "24249f21-da20-56a4-8eb1-6a02cf4ae2e6"
 version = "2.2.0"
 
 [[deps.SymPyCore]]
-deps = ["CommonEq", "CommonSolve", "Latexify", "LinearAlgebra", "Markdown", "RecipesBase", "SpecialFunctions"]
-git-tree-sha1 = "bef92ec4c31804bdc9c44cb00eaf0348eac383fb"
+deps = ["CommonEq", "CommonSolve", "Latexify", "LinearAlgebra", "Markdown", "RecipesBase", "SpecialFunctions", "TermInterface"]
+git-tree-sha1 = "00298a97cc22db25df07d2d5881590cf6e6c778f"
 uuid = "458b697b-88f0-4a86-b56b-78b75cfb3531"
-version = "0.2.5"
+version = "0.2.11"
 
     [deps.SymPyCore.extensions]
-    SymPyCoreTermInterfaceExt = "TermInterface"
+    SymPyCoreSymbolicUtilsExt = "SymbolicUtils"
 
     [deps.SymPyCore.weakdeps]
-    TermInterface = "8ea1fca8-c5ef-4a55-8b96-4e9afe9c9a3c"
+    SymbolicUtils = "d1185830-fcd6-423d-90d6-eec64667417b"
 
 [[deps.TOML]]
 deps = ["Dates"]
@@ -1088,6 +1256,11 @@ git-tree-sha1 = "1feb45f88d133a655e001435632f019a9a1bcdb6"
 uuid = "62fd8b95-f654-4bbd-a8a5-9c27f68ccd50"
 version = "0.1.1"
 
+[[deps.TermInterface]]
+git-tree-sha1 = "d673e0aca9e46a2f63720201f55cc7b3e7169b16"
+uuid = "8ea1fca8-c5ef-4a55-8b96-4e9afe9c9a3c"
+version = "2.0.0"
+
 [[deps.Test]]
 deps = ["InteractiveUtils", "Logging", "Random", "Serialization"]
 uuid = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
@@ -1099,9 +1272,9 @@ uuid = "3bb67fe8-82b1-5028-8e26-92a6c54297fa"
 version = "0.11.3"
 
 [[deps.Tricks]]
-git-tree-sha1 = "7822b97e99a1672bfb1b49b668a6d46d58d8cbcb"
+git-tree-sha1 = "6cae795a5a9313bbb4f60683f7263318fc7d1505"
 uuid = "410a4b4d-49e4-4fbc-ab6d-cb71b17b3775"
-version = "0.1.9"
+version = "0.1.10"
 
 [[deps.URIs]]
 git-tree-sha1 = "67db6cc7b3821e19ebe75791a9dd19c9b1188f2b"
@@ -1125,9 +1298,9 @@ version = "0.4.1"
 
 [[deps.Unitful]]
 deps = ["Dates", "LinearAlgebra", "Random"]
-git-tree-sha1 = "01915bfcd62be15329c9a07235447a89d588327c"
+git-tree-sha1 = "c0667a8e676c53d390a09dc6870b3d8d6650e2bf"
 uuid = "1986cc42-f94f-5a68-af5c-568840ba703d"
-version = "1.21.1"
+version = "1.22.0"
 
     [deps.Unitful.extensions]
     ConstructionBaseUnitfulExt = "ConstructionBase"
@@ -1161,21 +1334,21 @@ version = "1.3.243+0"
 
 [[deps.Wayland_jll]]
 deps = ["Artifacts", "EpollShim_jll", "Expat_jll", "JLLWrappers", "Libdl", "Libffi_jll", "Pkg", "XML2_jll"]
-git-tree-sha1 = "7558e29847e99bc3f04d6569e82d0f5c54460703"
+git-tree-sha1 = "85c7811eddec9e7f22615371c3cc81a504c508ee"
 uuid = "a2964d1f-97da-50d4-b82a-358c7fce9d89"
-version = "1.21.0+1"
+version = "1.21.0+2"
 
 [[deps.Wayland_protocols_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
-git-tree-sha1 = "93f43ab61b16ddfb2fd3bb13b3ce241cafb0e6c9"
+git-tree-sha1 = "5db3e9d307d32baba7067b13fc7b5aa6edd4a19a"
 uuid = "2381bf8a-dfd0-557d-9999-79630e7b1b91"
-version = "1.31.0+0"
+version = "1.36.0+0"
 
 [[deps.XML2_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Libiconv_jll", "Zlib_jll"]
-git-tree-sha1 = "a2fccc6559132927d4c5dc183e3e01048c6dcbd6"
+git-tree-sha1 = "b8b243e47228b4a3877f1dd6aee0c5d56db7fcf4"
 uuid = "02c8fc9c-b97f-50b9-bbe4-9be30ff0a78a"
-version = "2.13.5+0"
+version = "2.13.6+1"
 
 [[deps.XSLT_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Libgcrypt_jll", "Libgpg_error_jll", "Libiconv_jll", "XML2_jll", "Zlib_jll"]
@@ -1185,9 +1358,9 @@ version = "1.1.42+0"
 
 [[deps.XZ_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
-git-tree-sha1 = "15e637a697345f6743674f1322beefbc5dcd5cfc"
+git-tree-sha1 = "56c6604ec8b2d82cc4cfe01aa03b00426aac7e1f"
 uuid = "ffd25f8a-64ca-5728-b0f7-c24cf3aae800"
-version = "5.6.3+2"
+version = "5.6.4+1"
 
 [[deps.Xorg_libICE_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
@@ -1209,21 +1382,21 @@ version = "1.8.6+3"
 
 [[deps.Xorg_libXau_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
-git-tree-sha1 = "2b0e27d52ec9d8d483e2ca0b72b3cb1a8df5c27a"
+git-tree-sha1 = "e9216fdcd8514b7072b43653874fd688e4c6c003"
 uuid = "0c0b7dd1-d40b-584c-a123-a41640f87eec"
-version = "1.0.11+3"
+version = "1.0.12+0"
 
 [[deps.Xorg_libXcursor_jll]]
-deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg", "Xorg_libXfixes_jll", "Xorg_libXrender_jll"]
-git-tree-sha1 = "12e0eb3bc634fa2080c1c37fccf56f7c22989afd"
+deps = ["Artifacts", "JLLWrappers", "Libdl", "Xorg_libXfixes_jll", "Xorg_libXrender_jll"]
+git-tree-sha1 = "807c226eaf3651e7b2c468f687ac788291f9a89b"
 uuid = "935fb764-8cf2-53bf-bb30-45bb1f8bf724"
-version = "1.2.0+4"
+version = "1.2.3+0"
 
 [[deps.Xorg_libXdmcp_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
-git-tree-sha1 = "02054ee01980c90297412e4c809c8694d7323af3"
+git-tree-sha1 = "89799ae67c17caa5b3b5a19b8469eeee474377db"
 uuid = "a3789734-cfe1-5b06-b2d0-1dd0d9d62d05"
-version = "1.1.4+3"
+version = "1.1.5+0"
 
 [[deps.Xorg_libXext_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Xorg_libX11_jll"]
@@ -1232,40 +1405,40 @@ uuid = "1082639a-0dae-5f34-9b06-72781eeb8cb3"
 version = "1.3.6+3"
 
 [[deps.Xorg_libXfixes_jll]]
-deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg", "Xorg_libX11_jll"]
-git-tree-sha1 = "0e0dc7431e7a0587559f9294aeec269471c991a4"
+deps = ["Artifacts", "JLLWrappers", "Libdl", "Xorg_libX11_jll"]
+git-tree-sha1 = "6fcc21d5aea1a0b7cce6cab3e62246abd1949b86"
 uuid = "d091e8ba-531a-589c-9de9-94069b037ed8"
-version = "5.0.3+4"
+version = "6.0.0+0"
 
 [[deps.Xorg_libXi_jll]]
-deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg", "Xorg_libXext_jll", "Xorg_libXfixes_jll"]
-git-tree-sha1 = "89b52bc2160aadc84d707093930ef0bffa641246"
+deps = ["Artifacts", "JLLWrappers", "Libdl", "Xorg_libXext_jll", "Xorg_libXfixes_jll"]
+git-tree-sha1 = "984b313b049c89739075b8e2a94407076de17449"
 uuid = "a51aa0fd-4e3c-5386-b890-e753decda492"
-version = "1.7.10+4"
+version = "1.8.2+0"
 
 [[deps.Xorg_libXinerama_jll]]
-deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg", "Xorg_libXext_jll"]
-git-tree-sha1 = "26be8b1c342929259317d8b9f7b53bf2bb73b123"
+deps = ["Artifacts", "JLLWrappers", "Libdl", "Xorg_libXext_jll"]
+git-tree-sha1 = "a1a7eaf6c3b5b05cb903e35e8372049b107ac729"
 uuid = "d1454406-59df-5ea1-beac-c340f2130bc3"
-version = "1.1.4+4"
+version = "1.1.5+0"
 
 [[deps.Xorg_libXrandr_jll]]
-deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg", "Xorg_libXext_jll", "Xorg_libXrender_jll"]
-git-tree-sha1 = "34cea83cb726fb58f325887bf0612c6b3fb17631"
+deps = ["Artifacts", "JLLWrappers", "Libdl", "Xorg_libXext_jll", "Xorg_libXrender_jll"]
+git-tree-sha1 = "b6f664b7b2f6a39689d822a6300b14df4668f0f4"
 uuid = "ec84b674-ba8e-5d96-8ba1-2a689ba10484"
-version = "1.5.2+4"
+version = "1.5.4+0"
 
 [[deps.Xorg_libXrender_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Xorg_libX11_jll"]
-git-tree-sha1 = "47e45cd78224c53109495b3e324df0c37bb61fbe"
+git-tree-sha1 = "a490c6212a0e90d2d55111ac956f7c4fa9c277a6"
 uuid = "ea2f1a96-1ddc-540d-b46f-429655e07cfa"
-version = "0.9.11+0"
+version = "0.9.11+1"
 
 [[deps.Xorg_libpthread_stubs_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
-git-tree-sha1 = "fee57a273563e273f0f53275101cd41a8153517a"
+git-tree-sha1 = "c57201109a9e4c0585b208bb408bc41d205ac4e9"
 uuid = "14d82f49-176c-5ed1-bb49-ad3f5cbd8c74"
-version = "0.1.1+3"
+version = "0.1.2+0"
 
 [[deps.Xorg_libxcb_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "XSLT_jll", "Xorg_libXau_jll", "Xorg_libXdmcp_jll", "Xorg_libpthread_stubs_jll"]
@@ -1275,9 +1448,9 @@ version = "1.17.0+3"
 
 [[deps.Xorg_libxkbfile_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Xorg_libX11_jll"]
-git-tree-sha1 = "730eeca102434283c50ccf7d1ecdadf521a765a4"
+git-tree-sha1 = "dbc53e4cf7701c6c7047c51e17d6e64df55dca94"
 uuid = "cc61e674-0454-545c-8b26-ed2c68acab7a"
-version = "1.1.2+0"
+version = "1.1.2+1"
 
 [[deps.Xorg_xcb_util_cursor_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Xorg_xcb_util_image_jll", "Xorg_xcb_util_jll", "Xorg_xcb_util_renderutil_jll"]
@@ -1317,9 +1490,9 @@ version = "0.4.1+1"
 
 [[deps.Xorg_xkbcomp_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Xorg_libxkbfile_jll"]
-git-tree-sha1 = "330f955bc41bb8f5270a369c473fc4a5a4e4d3cb"
+git-tree-sha1 = "ab2221d309eda71020cdda67a973aa582aa85d69"
 uuid = "35661453-b289-5fab-8a00-3d9160c6a3a4"
-version = "1.4.6+0"
+version = "1.4.6+1"
 
 [[deps.Xorg_xkeyboard_config_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Xorg_xkbcomp_jll"]
@@ -1329,9 +1502,9 @@ version = "2.39.0+0"
 
 [[deps.Xorg_xtrans_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
-git-tree-sha1 = "b9ead2d2bdb27330545eb14234a2e300da61232e"
+git-tree-sha1 = "6dba04dbfb72ae3ebe5418ba33d087ba8aa8cb00"
 uuid = "c5fb5394-a638-5e4d-96e5-b29de1b5cf10"
-version = "1.5.0+3"
+version = "1.5.1+0"
 
 [[deps.Zlib_jll]]
 deps = ["Libdl"]
@@ -1340,9 +1513,9 @@ version = "1.2.13+1"
 
 [[deps.Zstd_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
-git-tree-sha1 = "555d1076590a6cc2fdee2ef1469451f872d8b41b"
+git-tree-sha1 = "446b23e73536f84e8037f5dce465e92275f6a308"
 uuid = "3161d3a3-bdf6-5164-811a-617609db77b4"
-version = "1.5.6+3"
+version = "1.5.7+1"
 
 [[deps.eudev_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg", "gperf_jll"]
@@ -1364,9 +1537,9 @@ version = "3.1.1+1"
 
 [[deps.libaom_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
-git-tree-sha1 = "1827acba325fdcdf1d2647fc8d5301dd9ba43a9d"
+git-tree-sha1 = "522c1df09d05a71785765d19c9524661234738e9"
 uuid = "a4ae2306-e953-59d6-aa16-d00cac43593b"
-version = "3.9.0+0"
+version = "3.11.0+0"
 
 [[deps.libass_jll]]
 deps = ["Artifacts", "Bzip2_jll", "FreeType2_jll", "FriBidi_jll", "HarfBuzz_jll", "JLLWrappers", "Libdl", "Zlib_jll"]
@@ -1405,9 +1578,9 @@ version = "1.18.0+0"
 
 [[deps.libpng_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Zlib_jll"]
-git-tree-sha1 = "b70c870239dc3d7bc094eb2d6be9b73d27bef280"
+git-tree-sha1 = "068dfe202b0a05b8332f1e8e6b4080684b9c7700"
 uuid = "b53b4c65-9356-5827-b1ea-8c7a1a84506f"
-version = "1.6.44+2"
+version = "1.6.47+0"
 
 [[deps.libvorbis_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Ogg_jll", "Pkg"]
@@ -1445,34 +1618,49 @@ version = "3.5.0+0"
 
 [[deps.xkbcommon_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg", "Wayland_jll", "Wayland_protocols_jll", "Xorg_libxcb_jll", "Xorg_xkeyboard_config_jll"]
-git-tree-sha1 = "9c304562909ab2bab0262639bd4f444d7bc2be37"
+git-tree-sha1 = "63406453ed9b33a0df95d570816d5366c92b7809"
 uuid = "d8fb68d0-12a3-5cfd-a85a-d49703b185fd"
-version = "1.4.1+1"
+version = "1.4.1+2"
 """
 
 # ╔═╡ Cell order:
-# ╠═03c7ad73-e71e-4df4-9ebc-a4a5b16acd0a
+# ╟─03c7ad73-e71e-4df4-9ebc-a4a5b16acd0a
 # ╟─4eb49696-55c7-47d1-bb13-5ef79885b5c2
 # ╟─1534b360-a534-11ef-3907-85c979017697
+# ╟─b8e6acb3-b3b0-4f1d-af2e-f21787c3b17f
+# ╟─ac63dbf4-85c9-49d1-9c01-b9778eb5765f
 # ╟─1aaea6d1-ce01-413b-b2f9-6885ba5a6196
 # ╟─3f6ba26a-3523-467a-ba21-3f24f42fb39c
 # ╟─98b1b285-405c-4e56-a2d2-3d420e7d99b1
 # ╟─07e9f020-efb7-46fc-8751-a311fdd1d034
 # ╟─86aa5956-7846-41c9-8b8f-b650eeff5463
+# ╟─1f8b511c-1175-48fe-8880-45ee5b4bd381
+# ╟─bd4995ef-b2d4-42dc-b7c3-da23040588a0
+# ╟─75570363-77f1-4541-9d3c-0fc4b0d094b5
+# ╟─4068758a-7abe-4b97-87dc-178d999d49aa
+# ╟─6f02e77a-e3fa-4239-a136-6da8ca3d76b6
+# ╟─3a9605c1-3ecc-451e-98ac-5434e5ddb5ee
+# ╟─a4faeccd-bffd-41ee-8cd4-a2465d7f190e
+# ╟─058caefb-ce8c-47f2-b9fa-a0c1ec7d0266
+# ╟─fa9ab1be-8fce-4be7-a6f5-2d06b59fdebd
+# ╟─c112c220-d90c-42d3-b109-5d3571167116
 # ╟─d6e22d21-171a-4002-b5f7-b6bf9413efa0
-# ╟─add499af-fd3e-43e2-94fb-28e5ebd30107
-# ╟─6ffee859-06dc-45b2-b972-14ed6e6a09ea
-# ╟─c2dc61df-173e-4c95-8875-35b324a1fb24
-# ╟─7d16979a-d188-450b-b952-2595c02d39e8
-# ╟─075def84-f8fb-4bd0-a431-8911a3ae1119
-# ╠═4dcaef0c-b003-4ef3-afb3-7d1b3220e747
-# ╠═cf8c210a-5cc1-43fb-8557-9f0ed61535dd
-# ╟─b8e6acb3-b3b0-4f1d-af2e-f21787c3b17f
-# ╟─ac63dbf4-85c9-49d1-9c01-b9778eb5765f
-# ╟─f9af3965-b7dc-4cd2-8665-18bb0953ce4d
+# ╟─30e3d720-d067-4f20-b046-596a36968b1f
+# ╟─8b9055d3-6f9a-44cd-9cd9-c105628323a6
+# ╟─9b6479a2-d73b-425a-bfad-3a957bcf95cf
+# ╟─1169f628-01d6-4be7-b724-695335242fab
 # ╟─9781c76f-8125-43a5-b26c-4f0867e51e41
-# ╟─4e0cedb1-3f37-41a1-98a0-207a79277380
-# ╟─37d2724f-eade-4cf2-9e9c-9c87f42ee5fb
+# ╟─62fcf9bb-b417-4141-9665-68cf142c6494
+# ╟─e4229f01-231b-49ee-8199-4c8fec8f5bd0
+# ╟─6bb3b1f0-e27c-44bc-912e-cb50ebcc0e08
+# ╟─40a8d7a0-c950-43f2-8162-60bb4251b58d
+# ╟─629253cc-5026-4575-9498-87dc6fc73634
+# ╟─2410f6aa-95d2-4c5f-93c0-87d639c3d48e
+# ╟─39db7f0c-1b82-45ec-a448-1030289ba036
+# ╟─09f4cd5e-10fe-4ae2-8c04-4ae7a7e9a953
+# ╟─7d0e35aa-7e89-4a09-be98-f835c4d55cf2
+# ╟─e10a73d5-1eb1-459c-a1d6-e1240cf74207
+# ╟─c534ac7f-5c8a-4685-8257-960adf6c311b
 # ╟─43220735-9069-4ac1-94a6-2faf42f80aaa
 # ╟─26b4253f-7d15-47f4-af13-398a421c76f2
 # ╟─1243aac7-ba90-4c8d-8c61-77bc8e4b6b8b
