@@ -4,7 +4,7 @@
     "href": "index.html",
     "title": "Demostraciones de Cálculo Científico con Julia",
     "section": "",
-    "text": "A continuación se presentan una serie de demostraciones de cálculo científico con Julia, que demuestran la potencia y la naturalidad de este lenguaje para modelar y resolver problemas científicos.\n\nCálculo de la aceleración de la gravedad\nCálculo del perímetro y del área de un círculo\nCálculo del área de un círculo mediante el Teorema Fundamental del Cálculo\nFiltros de imágenes\nCálculo del perímetro y el área del fractal del copo de nieve",
+    "text": "A continuación se presentan una serie de demostraciones de cálculo científico con Julia, que demuestran la potencia y la naturalidad de este lenguaje para modelar y resolver problemas científicos.\n\nCálculo de la aceleración de la gravedad (notebook.jl)\nCálculo del perímetro y del área de un círculo (notebook.jl)\nCálculo del área de un círculo mediante el Teorema Fundamental del Cálculo (notebook.jl)\nFiltros de imágenes (notebook.jl)\nCálculo del perímetro y el área del fractal del copo de nieve (notebook.jl)",
     "crumbs": [
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>Demostraciones de Cálculo Científico con Julia</span>"
     ]

@@ -2,7 +2,7 @@
 # v0.20.4
 
 #> [frontmatter]
-#> title = "Cálculo del Perímetro y el Área del Círculo por Agotamiento"
+#> title = "Cálculo del Área del Círculo por el Teorema Fundamental del Cálculo"
 #> date = "2025-09-01"
 #> tags = ["Análisis", "Límites"]
 #> 
