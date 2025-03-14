@@ -108,7 +108,7 @@ md"""
 A continuación se muestra la matriz que representa esta imagen.
 """
 
-# ╔═╡ 6fb476bc-a775-4d80-846a-3c5abb9431d6
+# ╔═╡ 8ea7bfd4-b8b5-42e3-8ab7-2376127c6574
 channelview(imagen)
 
 # ╔═╡ ebb63415-2738-47f3-b0ef-0fd6e6bac259
@@ -165,9 +165,42 @@ intensiad = @bind intensidad PlutoUI.Slider(0:0.05:0.2, default = 0.1)
 # ╔═╡ d729f8b4-05e2-4863-b8c4-39b37646c36b
 filtro_dispersion = fill(intensidad, 3, 3)
 
+# ╔═╡ 5403172e-718d-4858-ae0e-d09fb6ada175
+md"""
+Y tomamos una submatriz cualquiera de nuestra imagen con las mismas dimensiones que la matriz del filtro.
+"""
+
+# ╔═╡ 77835d5f-3c48-4396-b508-12bb6ff0606a
+submatriz = [1 0.5 1; 0.5 0 0.5; 1 0.5 1]
+
+# ╔═╡ 8599f1ae-a8d8-44ba-b3a4-9cc57055dba4
+md"""
+Ahora aplicamos la transformación de convolución de este filtro a la submatriz de la imagen.
+"""
+
+# ╔═╡ 43161b96-4bb3-443f-bda7-55237ea4261f
+submatriz .* filtro_dispersion
+
+# ╔═╡ 82db1108-8069-48b2-93de-d8551428cc05
+md"""
+El resultado de la convolución es la suma de estos valores, que es una combinación lineal de los valores originales.
+"""
+
+# ╔═╡ bcfa57a3-b2d1-4b35-95ba-2fe8a95f49a7
+resultado = sum(submatriz .* filtro_dispersion)
+
+# ╔═╡ 1a70ab32-76ec-46d3-abc3-cc9cddeac0bd
+md"""
+| Matriz original | Filtro de convolución | Resultado |
+|:--:|:--:|:--:|
+|$(Gray.(submatriz)) | $(Gray.(filtro_dispersion)) | $(Gray.([0 0 0; 0 resultado 0; 0 0 0])) | 
+"""
+
 # ╔═╡ f5e12f08-95b8-47bd-a7eb-4624711c84eb
 md"""
-Ahora aplicamos la transformación de convolución correspondiente a esta matriz.
+Esta operacion se reliza sobre cada posible submatriz de la matriz original.
+
+A continuación se ve el resultado para la imagen seleccionada.
 """
 
 # ╔═╡ 4402408c-3def-4f8e-841b-efd7aa43ba02
@@ -1569,12 +1602,19 @@ version = "17.4.0+2"
 # ╟─4edbfca5-cb25-4093-9f4d-5cfa2aa8d77f
 # ╟─ef0bea69-6dfd-4526-a96e-6607771660fe
 # ╟─a72357d9-103d-486b-b77d-6addcd4f8375
-# ╟─6fb476bc-a775-4d80-846a-3c5abb9431d6
+# ╟─8ea7bfd4-b8b5-42e3-8ab7-2376127c6574
 # ╟─ebb63415-2738-47f3-b0ef-0fd6e6bac259
 # ╠═44d594ff-a25b-4455-be56-863345c67b68
 # ╟─d752805d-ba2c-4133-a556-46a1da734557
 # ╟─031797e7-4afa-43c2-b426-6f6be6d646ad
 # ╟─d729f8b4-05e2-4863-b8c4-39b37646c36b
+# ╟─5403172e-718d-4858-ae0e-d09fb6ada175
+# ╠═77835d5f-3c48-4396-b508-12bb6ff0606a
+# ╟─8599f1ae-a8d8-44ba-b3a4-9cc57055dba4
+# ╠═43161b96-4bb3-443f-bda7-55237ea4261f
+# ╟─82db1108-8069-48b2-93de-d8551428cc05
+# ╠═bcfa57a3-b2d1-4b35-95ba-2fe8a95f49a7
+# ╟─1a70ab32-76ec-46d3-abc3-cc9cddeac0bd
 # ╟─f5e12f08-95b8-47bd-a7eb-4624711c84eb
 # ╠═4402408c-3def-4f8e-841b-efd7aa43ba02
 # ╟─51adb15e-d886-4cb3-b093-d284fb95a826
@@ -1583,11 +1623,11 @@ version = "17.4.0+2"
 # ╟─19b49665-0382-4eb1-9c70-8295e0aa819b
 # ╟─adc154cf-7059-4f1d-9bac-56b9a93cc47f
 # ╟─6c31cbb0-01ed-40cf-b400-3ed6b7c79ecc
-# ╠═4b560bf2-00d9-4440-9589-834cd9177f66
+# ╟─4b560bf2-00d9-4440-9589-834cd9177f66
 # ╟─a174850b-91cc-4463-ab28-61ca0a7221c6
 # ╟─3bcfeef1-4960-433c-9813-60940445e423
 # ╟─f844bca2-edb7-45ec-b860-5f1e0b8b6bc0
-# ╠═9d42dd93-98b4-40db-9d3f-8917d6f72354
+# ╟─9d42dd93-98b4-40db-9d3f-8917d6f72354
 # ╟─bb23b4ec-fbb6-4978-a3ef-f78b53a8339d
 # ╟─e0d5e5af-6dcf-49d4-90fc-94a4455d4c8d
 # ╟─cb91303d-1ba0-4c07-a3f4-cdbbd0ab3468
